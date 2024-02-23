@@ -1,12 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for the hamburger menu icon
 
-
-export default function Header({ onPageChange }) {
+export default function Header() {
   return (
+    
       <SafeAreaView style={[styles.header, styles.headerWithBottomBar]}>
-        <TouchableOpacity onPress={() => onPageChange('test')} style={styles.menuButton}>
+        <TouchableOpacity onPress={() => alert('Test')} style={styles.menuButton}>
           <Ionicons name="menu-outline" size={30} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerText}>RunSignUp RaceDay Assistant</Text>
@@ -18,7 +17,7 @@ export default function Header({ onPageChange }) {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: 'lightblue',
-    paddingTop: 40,
+    paddingTop: StatusBar.currentHeight + 20,
     paddingBottom: 20,
     alignItems: 'center',
     flexDirection: 'row',

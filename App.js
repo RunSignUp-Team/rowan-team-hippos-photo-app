@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
-import Header from './components/Header';
-import Test from './components/Test';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+import Header from './src/components/Header';
+import Test from './src/components/Test';
+import HomeScreen from './src/screens/homePage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 export default function App() {
-  const [activePage, setActivePage] = useState('home');
 
-  const handlePageChange = (page) => {
-    setActivePage(page);
-  };
+  const Stack = createNativeStackNavigator();
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header onPageChange={handlePageChange} />
-      <SafeAreaView style={styles.paddingPage}>
-      {activePage === 'home' ? <Error onPageChange={handlePageChange} /> : 
-      activePage === 'test' ? <Test onPageChange={handlePageChange} /> :
-      activePage === 'login' ? <Login onPageChange={handlePageChange} /> :
-      activePage === 'racePage' ? <RacePage onPageChange={handlePageChange} /> :
-      activePage === 'photoAlbumPage' ? <PhotoAlbumPage onPageChange={handlePageChange} /> :
-      activePage === 'photoCapturePage' ? <PhotoCapturePage onPageChange={handlePageChange} /> :
-      activePage === 'liveStreamPage' ? <LiveStreamPage onPageChange={handlePageChange} /> :
-      <Error />
-      }
-      </SafeAreaView>
+      <Header />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Test" component={Test} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 
@@ -40,7 +36,7 @@ const Error = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffa',
+    //backgroundColor: '#ffa',
   },
   content: {
     flex: 1,
