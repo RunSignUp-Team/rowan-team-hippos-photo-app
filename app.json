@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "runSignUp",
-    "slug": "runSignUp",
+    "name": "RunSignUpApp",
+    "slug": "RunSignUpApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
