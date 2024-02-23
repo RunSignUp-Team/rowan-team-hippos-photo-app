@@ -26,6 +26,7 @@ export default function App() {
       </SafeAreaView>
     </SafeAreaView>
   );
+
 }
 
 const Error = () => {
