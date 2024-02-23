@@ -14,12 +14,16 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+      <SafeAreaView style={styles.paddingFlex}>
+        <View style={styles.padding}></View>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Test" component={Test} />
+          <Stack.Screen style={styles.paddingPage} name="Home" component={HomeScreen} />
+          <Stack.Screen style={styles.paddingPage} name="Test" component={Test} />
         </Stack.Navigator>
       </NavigationContainer>
+      <View style={styles.padding}></View>
+      </SafeAreaView>
     </SafeAreaView>
   );
 
@@ -43,9 +47,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paddingPage: {
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
+  paddingFlex: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  padding: {
+    width: "2%",
   },
 });

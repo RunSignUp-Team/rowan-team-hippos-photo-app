@@ -3,7 +3,7 @@ import { StyleSheet, StatusBar } from 'react-native';
 export const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#FFC0CB', // Pink background for the entire safe area
+        //backgroundColor: 'rgba(200, 200, 52, 0)', // Pink background for the entire safe area
     },
     header: {
         paddingTop: StatusBar.currentHeight, 
@@ -24,5 +24,9 @@ export const styles = StyleSheet.create({
     text: {
         fontSize: 24,
         color: '#000',
+    },
+    paddingPage: {
+        paddingHorizontal: 10,
+        alignItems: 'center',
     },
 });

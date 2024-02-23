@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, SafeAreaView, StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { styles } from '../styles/HomeStyles';
+import Header from '../components/Header';
 
 const HomeScreen = () => {
     return (

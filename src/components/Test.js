@@ -7,7 +7,7 @@ const logo = {
     height: 64,
   };
 
-export default function Test({ onPageChange }) {
+export default function Test({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView>
