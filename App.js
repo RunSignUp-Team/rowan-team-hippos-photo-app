@@ -4,5 +4,5 @@ import Home from './src/screens/homePage';
 
 
 export default function App() {
-  return <Home />;
+  return <Home/>;
 }
