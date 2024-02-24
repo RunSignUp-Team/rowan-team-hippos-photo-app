@@ -5,7 +5,7 @@ const Title = () => {
     return(
         <View style={styles.container}>
             <Image
-                source={require('../../assets/runsignup.png')}
+                source={require('../../assets/runsignup.png')}  //hello text
                 style={styles.image}
             />
             <Text style={styles.text}>Welcome!</Text>
