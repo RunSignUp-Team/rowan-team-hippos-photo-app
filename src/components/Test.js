@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { styles } from '../styles/GlobalStyles';
 
 const logo = {
     uri: 'https://reactnative.dev/img/tiny_logo.png',
@@ -46,15 +47,3 @@ export default function Test({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffa',
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
