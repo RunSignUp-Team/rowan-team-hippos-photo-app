@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
-import Header from './src/components/Header';
+import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
 import { NavigationContainer } from '@react-navigation/native';
