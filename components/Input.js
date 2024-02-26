@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable, Text } from 'react-native';
-import { styles } from '../styles/LoginStyles';
+import { styles } from '../src/styles/LoginStyles';
 
 const Input = () => {
   const [username, setUsername] = useState('');

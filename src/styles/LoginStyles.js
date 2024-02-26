@@ -1,4 +1,4 @@
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     login_container: {
@@ -33,4 +33,27 @@ export const styles = StyleSheet.create({
       letterSpacing: 0.25,
       color: 'black',
     },
+    login_title_container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 0,
+        marginTop: 100,
+    },
+    login_image: {
+        resizeMode: 'cover',
+        width: 250,
+        marginBottom: 50,
+        alignContent: 'center',
+    },
+    login_title_text: {
+        alignContent: 'center',
+        fontSize: 45,
+        fontFamily: 'Apple SD Gothic Neo',
+    },
+    loginScreen_container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
   });
