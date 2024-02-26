@@ -1,33 +1,66 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { SignOutScreen} from './src/screens/index';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+
+
+
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function MyStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true, // Ensure headers are shown
+        headerStyle: {
+          backgroundColor: 'lightblue', // Customize the background color of the header
+        },
+        headerTintColor: '#fff', // This sets the back button and title color
+        headerTitleStyle: {
+          fontWeight: 'bold', // Customization for the title font weight
+        },
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Test" component={Test} />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
-
-  const Stack = createNativeStackNavigator();
-
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
-      <SafeAreaView style={styles.paddingFlex}>
-        <View style={styles.padding}></View>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen style={styles.paddingPage} name="Home" component={HomeScreen} />
-          <Stack.Screen style={styles.paddingPage} name="Test" component={Test} />
-        </Stack.Navigator>
+        <Drawer.Navigator
+          initialRouteName="Home"
+          drawerContent={(props) => <CustomDrawerContent {...props} />}
+        >
+          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title: 'Home' }} />
+          <Drawer.Screen name="SignOut" component={SignOutScreen} />
+          
+        </Drawer.Navigator>
       </NavigationContainer>
-      <View style={styles.padding}></View>
-      </SafeAreaView>
     </SafeAreaView>
   );
 
 }
+const CustomDrawerContent = (props) => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={{ backgroundColor: 'lightpink' }}> 
+        <DrawerItemList {...props} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const Error = () => {
   return (
@@ -40,7 +73,7 @@ const Error = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: '#ffa',
+    backgroundColor: 'lightpink',
   },
   content: {
     flex: 1,
