@@ -44,7 +44,7 @@ export default function App() {
 const CustomDrawerContent = (props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ backgroundColor: 'lightpink' }}> 
+      <ScrollView style={{ backgroundColor: '#ef4f9d' }}> 
         <DrawerItemList {...props} />
       </ScrollView>
     </SafeAreaView>
@@ -62,7 +62,7 @@ const Error = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightpink',
+    backgroundColor: '#ef4f9d',
   },
   content: {
     flex: 1,
