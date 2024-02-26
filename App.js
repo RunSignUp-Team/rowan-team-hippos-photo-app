@@ -1,23 +1,57 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Input from './src/screens/Input.js';
-import Title from './src/screens/Title.js'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+import Header from './src/navigation/Header';
+import Test from './src/components/Test';
+import HomeScreen from './src/screens/homePage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const App = () => {
+
+export default function App() {
+
+  const Stack = createNativeStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Title/>
-      <Input/>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Header />
+      <SafeAreaView style={styles.paddingFlex}>
+        <View style={styles.padding}></View>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen style={styles.paddingPage} name="Home" component={HomeScreen} />
+          <Stack.Screen style={styles.paddingPage} name="Test" component={Test} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <View style={styles.padding}></View>
+      </SafeAreaView>
+    </SafeAreaView>
+  );
+
+}
+
+const Error = () => {
+  return (
+    <SafeAreaView style={styles.content}>
+      <Text> You shouldn't be seeing this page </Text>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    //backgroundColor: '#ffa',
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paddingFlex: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  padding: {
+    width: "2%",
   },
 });
-
-export default App;
