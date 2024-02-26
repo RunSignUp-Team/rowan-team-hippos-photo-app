@@ -9,6 +9,7 @@ const HomeScreen = ({navigation}) => {
             
             <View style={styles.container}>
             </View>
+            
         </SafeAreaView>
     );
 };

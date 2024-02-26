@@ -17,18 +17,7 @@ const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: true, // Ensure headers are shown
-        headerStyle: {
-          backgroundColor: 'lightblue', // Customize the background color of the header
-        },
-        headerTintColor: '#fff', // This sets the back button and title color
-        headerTitleStyle: {
-          fontWeight: 'bold', // Customization for the title font weight
-        },
-      }}
-    >
+    <Stack.Navigator >
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Test" component={Test} />
     </Stack.Navigator>
