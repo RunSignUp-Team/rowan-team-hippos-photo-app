@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, Scro
 import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
+import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -17,14 +18,19 @@ const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
   return (
-    <Stack.Navigator >
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Test" component={Test} />
+      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
+      <Stack.Screen name="Login">
+        {(props) => <HomeScreen {...props} setShowHeader={Login} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
 
 export default function App() {
+  const [showHeader, setShowHeader] = useState(true);
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
@@ -36,6 +42,7 @@ export default function App() {
           <Drawer.Screen name="SignOut" component={SignOutScreen} />
           
         </Drawer.Navigator>
+
       </NavigationContainer>
     </SafeAreaView>
   );
