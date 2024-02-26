@@ -10,11 +10,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function App() {
 
+  const [showHeader, setShowHeader] = useState(true); 
+
   const Stack = createNativeStackNavigator();
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      {showHeader && <Header />}
       <SafeAreaView style={styles.paddingFlex}>
         <View style={styles.padding}></View>
       <NavigationContainer>
@@ -22,6 +24,9 @@ export default function App() {
           <Stack.Screen style={styles.paddingPage} name="Home" component={HomeScreen} />
           <Stack.Screen style={styles.paddingPage} name="Test" component={Test} />
           <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
+          <Stack.Screen name="Login">
+              {(props) => <HomeScreen {...props} setShowHeader={Login} />}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
       <View style={styles.padding}></View>
