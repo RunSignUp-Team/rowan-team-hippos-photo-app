@@ -7,8 +7,8 @@ import Header from '../navigation/Header';
 const HomeScreen = ({ navigation }) => {
     const [raceData, setRaceData] = useState([]);
     const race_director_api_key = 'ITdG8ewa2dHun6YrE7k2tEhpk7byTl2w';
-    const race_director_races = ['26330', '26331', '26332', '26329'];
-
+    //const race_director_races = ['26330', '26331', '26332', '26329'];
+    const race_director_races = [];
     useEffect(() => {
         fetchRaceData();
     }, []);
@@ -32,7 +32,16 @@ const HomeScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={localStyles.container}>
-                <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                {race_director_races.length == 0 ? (
+                <View style={localStyles.centerAlign}>
+                    <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+                </View>
+                ) : ( raceData.length == 0 ? (
+                    <View style={localStyles.centerAlign}>
+                        <Text style={localStyles.failedFetchingErrorText}>Sorry, the system ran into some trouble. Please try closing and reopening the app.</Text>
+                    </View>
+                ) : 
+                    <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
                     {raceData.map((rowData, index) => (
                         <Row
                             key={index}
@@ -42,7 +51,8 @@ const HomeScreen = ({ navigation }) => {
                             flexArr={[1, 1]} // Adjust column width
                         />
                     ))}
-                </Table>
+                    </Table>
+                )}
             </View>
         </SafeAreaView>
     );
@@ -68,6 +78,9 @@ const localStyles = StyleSheet.create({
     raceName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0 },
     date: { fontSize: 18, paddingBottom: 20 },
     touchable: { flex: 1 },
+    noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
+    failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
+    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1}
 });
 
 export default HomeScreen;
