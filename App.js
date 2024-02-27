@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView, Platform } from 'react-native';
 import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
@@ -18,11 +18,11 @@ const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" />}}/>
       <Stack.Screen name="Test" component={Test} />
-      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
-      <Stack.Screen name="Login">
+      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
+      <Stack.Screen name="Login" options={{ headerShown: false }}>
         {(props) => <HomeScreen {...props} setShowHeader={Login} />}
       </Stack.Screen>
     </Stack.Navigator>
@@ -30,7 +30,6 @@ function MyStackNavigator() {
 }
 
 export default function App() {
-  const [showHeader, setShowHeader] = useState(true);
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
@@ -38,9 +37,8 @@ export default function App() {
           initialRouteName="Home"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title: 'Home' }} />
-          <Drawer.Screen name="SignOut" component={SignOutScreen} />
-          
+          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ headerShown: false }} />
+          <Drawer.Screen name="SignOut" component={SignOutScreen} options={{ header: () => <Header title="Sign Out" />}}/>          
         </Drawer.Navigator>
 
       </NavigationContainer>
@@ -51,7 +49,7 @@ export default function App() {
 const CustomDrawerContent = (props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ backgroundColor: '#ef4f9d' }}> 
+      <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
         <DrawerItemList {...props} />
       </ScrollView>
     </SafeAreaView>
