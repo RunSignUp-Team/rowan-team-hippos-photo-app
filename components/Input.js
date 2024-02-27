@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable, Text } from 'react-native';
 import { styles } from '../src/styles/LoginStyles';
+import { useAuth } from './AuthContext';
+
+const { setTmpKey } = useAuth();
 
 const Input = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -37,9 +40,11 @@ const Input = ({ navigation }) => {
       if (json.error) { // Handle the error case
         console.error(json.error.error_msg); // error message
         setErrorMessage('Login failed. Please try again.');
-      } else {
+      } else { // Assume success
         setErrorMessage('');
-        navigation.navigate('Home'); // Assume success if no error and navigate to the Home screen
+        setTmpKey(json.tpm_key); 
+        console.log(tmpKey); // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
+        navigation.navigate('Home'); // Navigate to the Home screen
       }
 
     } catch (error) {
