@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, TextInput, Pressable, Text } from 'react-native';
 import { styles } from '../src/styles/LoginStyles';
 
-const Input = () => {
+const Input = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [hasPressed, setHasPressed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleUsernameChange = (text) => {
     setUsername(text); //changes the username when the input field is changed
@@ -31,14 +32,20 @@ const Input = () => {
         method: 'POST',
         body: formData,
       });
-  
       let json = await response.json();
-      console.log(json);
-      return json; // This will be the JSON object returned by the API ; check if the object contains a user to then move them to home screen
+
+      if (json.error) { // Handle the error case
+        console.error(json.error.error_msg); // error message
+        setErrorMessage('Login failed. Please try again.');
+      } else {
+        setErrorMessage('');
+        navigation.navigate('Home'); // Assume success if no error and navigate to the Home screen
+      }
+
     } catch (error) {
-      console.error(error);
+      console.error(error); // Catch and log any errors during the fetch operation
     }
-  }
+}
 
   return (
     <View style={styles.login_container}>
@@ -58,6 +65,7 @@ const Input = () => {
       <Pressable style={({ pressed }) => [styles.login_button,{backgroundColor: pressed ? 'rgb(175,16,93)' : 'rgb(239,79,157)'}]} onPress={() => loginUser(username, password)}>
         <Text style={styles.login_text}>Submit</Text>
       </Pressable>
+      {hasPressed && errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>} 
     </View>
   );
 };

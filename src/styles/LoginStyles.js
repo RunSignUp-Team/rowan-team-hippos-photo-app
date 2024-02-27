@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
     },
     login_title_text: {
         alignContent: 'center',
+        marginBottom: 80,
         fontSize: 45,
         fontFamily: 'Apple SD Gothic Neo',
     },
@@ -55,5 +56,12 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+      },
+    errorMessage: {
+      color: 'red',
+      textAlign: 'center',
+      marginTop: 4,
+      marginBottom: 4,
+      paddingHorizontal: 0,
       },
   });
