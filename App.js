@@ -5,7 +5,6 @@ import LoginScreen from './src/screens/LoginScreen';
 import HomePage from './src/screens/homePage';
 import { AuthProvider } from './components/AuthContext'; // Adjust the path as necessary
 
-
 const Stack = createNativeStackNavigator();
 
 const App = () => {

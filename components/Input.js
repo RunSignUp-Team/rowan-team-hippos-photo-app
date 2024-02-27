@@ -3,13 +3,13 @@ import { View, TextInput, Pressable, Text } from 'react-native';
 import { styles } from '../src/styles/LoginStyles';
 import { useAuth } from './AuthContext'; //importing the useAuth from the AuthContext.js file
 
-const { setTmpKey } = useAuth();
-
 const Input = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [hasPressed, setHasPressed] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); 
+
+  const { setTmpKey } = useAuth();
 
   const handleUsernameChange = (text) => {
     setUsername(text); //changes the username when the input field is changed
@@ -43,7 +43,8 @@ const Input = ({ navigation }) => {
       } else { // Assume success if no error occurs
         setErrorMessage('');  //resetting the error message when successful login
         setTmpKey(json.tpm_key); //setting the tmpKey to the returned tmp_key from the JSON object
-        console.log(tmpKey); // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
+        // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
+        console.log(json);
         navigation.navigate('Home'); // Navigate to the Home screen
       }
 
@@ -52,7 +53,7 @@ const Input = ({ navigation }) => {
     }
 }
 
-  return (
+return (
     <View style={styles.login_container}>
       <TextInput
         style={[styles.login_input, { borderColor: (username=='' && hasPressed==true) ? 'red' : 'black' }]}
