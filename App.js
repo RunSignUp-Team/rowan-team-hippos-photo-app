@@ -37,7 +37,7 @@ export default function App() {
           initialRouteName="Home"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ headerShown: false }} />
+          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title:'Home', headerShown: false }} />
           <Drawer.Screen name="SignOut" component={SignOutScreen} options={{ header: () => <Header title="Sign Out" />}}/>          
         </Drawer.Navigator>
 
