@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
         borderBottomColor: 'black',
     },
     header: {
-        backgroundColor: 'lightblue',
+        //backgroundColor: 'lightblue',
         paddingTop: StatusBar.currentHeight + 20,
         paddingBottom: 20,
         alignItems: 'center',
