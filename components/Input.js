@@ -27,13 +27,14 @@ const Input = ({ navigation }) => {
     let formData = new FormData();
     formData.append('email', username);
     formData.append('password', password);
-    formData.append('format', 'json');
-    formData.append('supports_nb', 'F');
+    //formData.append('format', 'json');
+    //formData.append('supports_nb', 'F');
+    console.log(formData);
   
     try {
-      let response = await fetch('https://runsignup.com/Rest/login?format=json&supports_nb=F', {
+      let response = await fetch('https://test3.runsignup.com/Rest/login?format=json&supports_nb=F', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       let json = await response.json();
 
