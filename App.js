@@ -6,7 +6,8 @@ import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { AuthProvider } from './src/components/AuthContext';
+import LoginScreen from './src/screens/LoginScreen';
 import { SignOutScreen} from './src/screens/index';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
@@ -18,14 +19,14 @@ const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <AuthProvider>
+      <Stack.Navigator initialRouteName='Login'  screenOptions={{headerShown: false}}>
+      <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, headerBackVisible: false }} />
       <Stack.Screen name="Test" component={Test} />
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
-      <Stack.Screen name="Login">
-        {(props) => <HomeScreen {...props} setShowHeader={Login} />}
-      </Stack.Screen>
     </Stack.Navigator>
+    </AuthProvider>
   );
 }
 
@@ -84,3 +85,5 @@ const styles = StyleSheet.create({
     width: "2%",
   },
 });
+
+

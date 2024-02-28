@@ -1,95 +1,80 @@
 import React, { useState } from 'react';
-import { View, TextInput, Pressable, StyleSheet, Text } from 'react-native';
+import { View, TextInput, Pressable, Text } from 'react-native';
+import { styles } from '../styles/LoginStyles';
+import { useAuth } from './AuthContext'; //importing the useAuth from the AuthContext.js file
 
-const Input = () => {
+const Input = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [usernameEmpty, setUsernameEmpty] = useState(false);
-  const [passwordEmpty, setPasswordEmpty] = useState(false);
   const [hasPressed, setHasPressed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); 
+
+  const { setTmpKey } = useAuth();
 
   const handleUsernameChange = (text) => {
-    setUsername(text);
-    if (hasPressed) {
-      setUsernameEmpty(text === '');
-    }
+    setUsername(text); //changes the username when the input field is changed
   };
 
   const handlePasswordChange = (text) => {
-    setPassword(text);
-    if (hasPressed) {
-      setPasswordEmpty(text === '');
-    }
+    setPassword(text); //changes the password when the input field is changed
   };
 
-  const handleLogin = () => {
-    setHasPressed(true);
-    
-    console.log('Username:', username);
-    console.log('Password:', password);
+  async function loginUser(username, password) {
 
-    if(username.trim() == '' || password.trim() == '') {
-      console.log('empty');
-    } else {
-      //handle login
+    setHasPressed(true); //set true when pressed for first time to indicate the input fields to turn red
+
+    // Construct FormData
+    let formData = new FormData();
+    formData.append('email', username);
+    formData.append('password', password);
+    //formData.append('format', 'json');
+    //formData.append('supports_nb', 'F');
+    console.log(formData);
+  
+    try {
+      let response = await fetch('https://test3.runsignup.com/Rest/login?format=json&supports_nb=F', {
+        method: 'POST',
+        body: formData
+      });
+      let json = await response.json();
+
+      if (json.error) { // Handle the error case
+        console.error(json.error.error_msg); // error message
+        setErrorMessage('Login failed. Please try again.'); //setting the error message below the submit button
+      } else { // Assume success if no error occurs
+        setErrorMessage('');  //resetting the error message when successful login
+        setTmpKey(json.tpm_key); //setting the tmpKey to the returned tmp_key from the JSON object
+        // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
+        console.log(json);
+        navigation.navigate('Home'); // Navigate to the Home screen
+      }
+
+    } catch (error) {
+      console.error(error); // Catch and log any errors during the fetch operation
     }
-  };
+}
 
-  return (
-    <View style={styles.container}>
+return (
+    <View style={styles.login_container}>
       <TextInput
-        style={[styles.input, { borderColor: usernameEmpty ? 'red' : 'black' }]}
-        placeholder="Username"
+        style={[styles.login_input, { borderColor: (username=='' && hasPressed==true) ? 'red' : 'black' }]}
+        placeholder="Email"
         onChangeText={handleUsernameChange}
         value={username}
       />
       <TextInput
-        style={[styles.input, { borderColor: passwordEmpty ? 'red' : 'black' }]}
+        style={[styles.login_input, { borderColor: (password=='' && hasPressed==true) ? 'red' : 'black' }]}
         placeholder="Password"
         secureTextEntry={true}
         onChangeText={handlePasswordChange}
         value={password}
       />
-      <Pressable style={({ pressed }) => [styles.button,{backgroundColor: pressed ? 'rgb(175,16,93)' : 'rgb(239,79,157)'}]} onPress={handleLogin}>
-        <Text style={styles.text}>Submit</Text>
+      <Pressable style={({ pressed }) => [styles.login_button,{backgroundColor: pressed ? 'rgb(175,16,93)' : 'rgb(239,79,157)'}]} onPress={() => loginUser(username, password)}>
+        <Text style={styles.login_text}>Submit</Text>
       </Pressable>
+      {hasPressed && errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>} 
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-    marginBottom: 100,
-  },
-  input: {
-    height: 50,
-    width: 280,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    textAlign: 'center',
-    borderRadius: 25,
-  },
-  button: {
-    height: 50,
-    width: 280,
-    orderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 25,
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'black',
-  },
-});
 
 export default Input;
