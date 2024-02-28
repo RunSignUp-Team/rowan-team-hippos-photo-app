@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
@@ -54,6 +55,7 @@ const HomeScreen = ({ navigation }) => {
                     </Table>
                 )}
             </View>
+
         </SafeAreaView>
     );
 };
@@ -84,3 +86,4 @@ const localStyles = StyleSheet.create({
 });
 
 export default HomeScreen;
+

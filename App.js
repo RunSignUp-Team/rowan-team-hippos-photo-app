@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, ScrollView, Platform } from 'react-native';
 import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { AuthProvider } from './src/components/AuthContext';
+import LoginScreen from './src/screens/LoginScreen';
 import { SignOutScreen} from './src/screens/index';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
@@ -18,19 +19,18 @@ const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <AuthProvider>
+      <Stack.Navigator initialRouteName='Login'>
+      <Stack.Screen name='Login' component={LoginScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" />}}/>
       <Stack.Screen name="Test" component={Test} />
-      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
-      <Stack.Screen name="Login">
-        {(props) => <HomeScreen {...props} setShowHeader={Login} />}
-      </Stack.Screen>
+      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
+    </AuthProvider>
   );
 }
 
 export default function App() {
-  const [showHeader, setShowHeader] = useState(true);
   return (
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
@@ -38,9 +38,8 @@ export default function App() {
           initialRouteName="Home"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title: 'Home' }} />
-          <Drawer.Screen name="SignOut" component={SignOutScreen} />
-          
+          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title:'Home', headerShown: false }} />
+          <Drawer.Screen name="SignOut" component={SignOutScreen} options={{ header: () => <Header title="Sign Out" />}}/>          
         </Drawer.Navigator>
 
       </NavigationContainer>
@@ -51,7 +50,7 @@ export default function App() {
 const CustomDrawerContent = (props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ backgroundColor: '#ef4f9d' }}> 
+      <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
         <DrawerItemList {...props} />
       </ScrollView>
     </SafeAreaView>
@@ -84,3 +83,5 @@ const styles = StyleSheet.create({
     width: "2%",
   },
 });
+
+
