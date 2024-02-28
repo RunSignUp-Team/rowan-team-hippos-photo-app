@@ -21,11 +21,11 @@ function MyStackNavigator() {
   return (
     <AuthProvider>
       <Stack.Navigator initialRouteName='Login'  screenOptions={{headerShown: false}}>
-      <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen name='Login' component={LoginScreen}/>
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, headerBackVisible: false }} />
-      <Stack.Screen name="Test" component={Test} />
-      <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
-    </Stack.Navigator>
+        <Stack.Screen name="Test" component={Test} />
+        <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} />
+      </Stack.Navigator>
     </AuthProvider>
   );
 }
