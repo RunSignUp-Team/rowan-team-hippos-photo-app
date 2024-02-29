@@ -6,7 +6,7 @@ import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider } from './src/components/AuthContext';
+import { AuthProvider, useAuth } from './src/components/AuthContext';
 import LoginScreen from './src/screens/LoginScreen';
 import { SignOutScreen} from './src/screens/index';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -48,9 +48,11 @@ export default function App() {
 
 }
 const CustomDrawerContent = (props) => {
+  let { usersName } = useAuth();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
+        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>Kyle Reed</Text>
         <DrawerItemList {...props} />
       </ScrollView>
     </SafeAreaView>
