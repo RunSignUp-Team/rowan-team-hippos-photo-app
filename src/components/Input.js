@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, TextInput, Pressable, Text } from 'react-native';
 import { styles } from '../styles/LoginStyles';
-import { useAuth } from './AuthContext'; //importing the useAuth from the AuthContext.js file
+import { UserContext } from './AuthContext';
 
 const Input = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -9,7 +9,7 @@ const Input = ({ navigation }) => {
   const [hasPressed, setHasPressed] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); 
 
-  const { setTmpKey, setTmpSecret, setUsersName, usersName } = useAuth();
+  const { setTmpKey, setTmpSecret, setUsersName, tmpKey } = useContext(UserContext);
 
   const handleUsernameChange = (text) => {
     setUsername(text); //changes the username when the input field is changed
@@ -29,7 +29,7 @@ const Input = ({ navigation }) => {
     formData.append('password', password);
     //formData.append('format', 'json');
     //formData.append('supports_nb', 'F');
-    console.log(formData);
+    console.log("Form Data: " + formData);
   
     try {
       let response = await fetch('https://test3.runsignup.com/Rest/login?format=json&supports_nb=F', {
@@ -43,11 +43,11 @@ const Input = ({ navigation }) => {
         setErrorMessage('Login failed. Please try again.'); //setting the error message below the submit button
       } else { // Assume success if no error occurs
         setErrorMessage('');  //resetting the error message when successful login
-        setTmpSecret(json.tmp_secret)
         setTmpKey(json.tmp_key); //setting the tmpKey to the returned tmp_key from the JSON object
+        setTmpSecret(json.tmp_secret)
         setUsersName(json.user.user.first_name + " " + json.user.user.last_name);
         // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
-        console.log(json);
+        console.log("Input " + tmpKey);
         navigation.navigate('Home'); // Navigate to the Home screen
       }
 

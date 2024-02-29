@@ -3,13 +3,10 @@ import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for the hambur
 import {styles} from '../styles/GlobalStyles';
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../components/AuthContext';
 
 
 export default function Header({title}) {
   const navigation = useNavigation();
-  const { usersName, tmpKey } = useAuth();
-  console.log("Test2: " + tmpKey);
   return (
       <SafeAreaView style={[styles.header, styles.headerWithBottomBar]}>
       

@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import Title from './Title';
-import Context from './Context';
+import React, { createContext, useState } from "react";
 
-const AuthProvider = ({ children }) => {
-  const [tmpKey, setTmpKey] = useState(null);
-  const [tmpSecret, setTmpSecret] = useState(null);
-  const [usersName, setUsersName] = useState(null);
+const UserContext = createContext();
+
+function AuthProvider({ children }) {
+  const [tmpKey, setTmpKey] = useState("4");
+  const [tmpSecret, setTmpSecret] = useState("4");
+  const [usersName, setUsersName] = useState("4");
+
+  console.log("Auth " + tmpKey);
 
   return (
-    <Context.Provider value={{ tmpKey, setTmpKey, tmpSecret, setTmpSecret, usersName, setUsersName }}>
-      {children}
-    </Context.Provider>
+    <UserContext.Provider value={{tmpKey, tmpSecret, usersName, setTmpKey, setTmpSecret, setUsersName}}>
+        {children}
+    </UserContext.Provider>
   );
-};
+}
 
-export default AuthProvider;
+export { AuthProvider, UserContext };

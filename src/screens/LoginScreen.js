@@ -6,7 +6,7 @@ import { styles } from '../../src/styles/LoginStyles';
 
 export default function LoginScreen({ navigation }) {
     return (
-    <View style={styles.loginScreen_container}>
+      <View style={styles.loginScreen_container}>
       <Title/>
       <Input navigation={navigation} />
     </View>

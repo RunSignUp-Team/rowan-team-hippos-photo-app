@@ -1,11 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
-import { useAuth } from '../components/AuthContext';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { UserContext } from '../components/AuthContext';
+import { AuthProvider } from '../components/AuthContext';
 
 const HomeScreen = ({ navigation }) => {
     const [raceData, setRaceData] = useState([]);
@@ -14,7 +13,8 @@ const HomeScreen = ({ navigation }) => {
         fetchRaceData();
     }, []);
 
-    const { tmpKey, tmpSecret } = useAuth();
+    const { tmpKey, tmpSecret } = useContext(UserContext);
+    console.log("TestHome " + tmpKey)
     useEffect(() => {
       console.log("Current tmpKey value:", tmpKey);
       console.log("Current tmpSecret value:", tmpSecret);
@@ -35,7 +35,6 @@ const HomeScreen = ({ navigation }) => {
                 let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_secret=${tmpSecret}&format=json&page=1&results_per_page=50&sort=name+ASC&start_date=2030-02-12&distance_units=K`);
                 //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&page=1&results_per_page=50&sort=name+ASC&start_date=2030-02-12&distance_units=K`);
                 let data = await response.json();
-                console.log(data);
                 races = data.races.map(obj => obj.race);
                 races.forEach(race => {
                     let raceName = race.name;
@@ -79,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
                             <Row
                                 key={index}
                                 data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                                style={localStyles.row}
+                                //style={localStyles.row}
                                 //textStyle={localStyles.text}
                                 flexArr={[1, 1]} // Adjust column width
                             />
@@ -120,6 +119,14 @@ const localStyles = StyleSheet.create({
     failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
     centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1}
 });
+
+const HomeScreenBase = ({ navigation }) => {
+    return (
+        <AuthProvider>
+            <HomeScreen />
+        </AuthProvider>
+    );
+};
 
 export default HomeScreen;
 
