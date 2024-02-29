@@ -6,7 +6,7 @@ import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider } from './src/components/AuthContext';
+import { AuthProvider, useAuth } from './src/components/AuthContext';
 import LoginScreen from './src/screens/LoginScreen';
 import { DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerItemList } from '@react-navigation/drawer';
@@ -50,10 +50,12 @@ const CustomDrawerContent = (props) => {
 // IMPORTANT:  add a way to clear the email and password fields when returning to the login screen
 
 const navigation = useNavigation();
+let { usersName } = useAuth();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
+        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
         <DrawerItemList {...props}/>
         <DrawerItem
           label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
