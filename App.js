@@ -6,18 +6,48 @@ import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider, useAuth } from './src/components/AuthContext';
+import { AuthProvider } from './src/components/AuthContext';
 import LoginScreen from './src/screens/LoginScreen';
 import { DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 
+
+
+import { useAuth } from './src/components/AuthContext';
+
+
+export function SHeader({title}) {
+  const { usersName, tmpKey } = useAuth();
+  console.log("Test3: " + tmpKey);
+  return (
+      <SafeAreaView style={[styles.header, styles.headerWithBottomBar]}>
+      
+        <Text style={styles.headerText}>{title}</Text>
+        <SafeAreaView style={styles.gap}></SafeAreaView>
+      </SafeAreaView>
+  );
+}
+
+export function UserText() {
+  const { usersName, tmpKey } = useAuth();
+  console.log("Test 4" + " " + tmpKey);
+  return (
+    <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
+  );
+}
+
+
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function MyStackNavigator() {
+  
   return (
     <AuthProvider>
+      <SHeader></SHeader>
+      <UserText></UserText>
+      <Text></Text>
       <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" />}}/>
@@ -29,6 +59,7 @@ function MyStackNavigator() {
 }
 
 export default function App() {
+  
   return (
     <AuthProvider>
       <SafeAreaView style={styles.container}>
@@ -50,12 +81,10 @@ const CustomDrawerContent = (props) => {
 // IMPORTANT:  add a way to clear the email and password fields when returning to the login screen
 
 const navigation = useNavigation();
-let { usersName } = useAuth();
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
-        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
+        <UserText></UserText>
         <DrawerItemList {...props}/>
         <DrawerItem
           label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions

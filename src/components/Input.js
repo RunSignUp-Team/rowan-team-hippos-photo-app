@@ -9,7 +9,7 @@ const Input = ({ navigation }) => {
   const [hasPressed, setHasPressed] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); 
 
-  const { setTmpKey, setTmpSecret } = useAuth();
+  const { setTmpKey, setTmpSecret, setUsersName, usersName } = useAuth();
 
   const handleUsernameChange = (text) => {
     setUsername(text); //changes the username when the input field is changed
@@ -45,6 +45,7 @@ const Input = ({ navigation }) => {
         setErrorMessage('');  //resetting the error message when successful login
         setTmpSecret(json.tmp_secret)
         setTmpKey(json.tmp_key); //setting the tmpKey to the returned tmp_key from the JSON object
+        setUsersName(json.user.user.first_name + " " + json.user.user.last_name);
         // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
         console.log(json);
         navigation.navigate('Home'); // Navigate to the Home screen

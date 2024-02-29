@@ -80,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
                                 key={index}
                                 data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
                                 style={localStyles.row}
-                                textStyle={localStyles.text}
+                                //textStyle={localStyles.text}
                                 flexArr={[1, 1]} // Adjust column width
                             />
                         ))}
