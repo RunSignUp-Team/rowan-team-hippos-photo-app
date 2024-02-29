@@ -6,9 +6,10 @@ export const useAuth = () => useContext(AuthContext);  //hook that consume the A
 
 export const AuthProvider = ({ children }) => {
   const [tmpKey, setTmpKey] = useState(null);
+  const [tmpSecret, setTmpSecret] = useState(null);
 
   return (
-    <AuthContext.Provider value={{ tmpKey, setTmpKey }}>
+    <AuthContext.Provider value={{ tmpKey, setTmpKey, tmpSecret, setTmpSecret }}>
       {children}
     </AuthContext.Provider>
   );
