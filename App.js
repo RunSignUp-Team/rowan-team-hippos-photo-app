@@ -8,11 +8,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, useAuth } from './src/components/AuthContext';
 import LoginScreen from './src/screens/LoginScreen';
-import { SignOutScreen} from './src/screens/index';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-
-
+import { DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerItemList } from '@react-navigation/drawer';
+import { useNavigation } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,37 +30,40 @@ function MyStackNavigator() {
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <AuthProvider>
+      <SafeAreaView style={styles.container}>
       <NavigationContainer>
         <Drawer.Navigator
           initialRouteName="Home"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
           <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title:'Home', headerShown: false }} />
-          <Drawer.Screen name="SignOut" component={SignOutScreen} options={{ header: () => <Header title="Sign Out" />}}/>          
         </Drawer.Navigator>
-
       </NavigationContainer>
     </SafeAreaView>
+    </AuthProvider>
   );
 
 }
 const CustomDrawerContent = (props) => {
-  let { usersName } = useAuth();
+
+// IMPORTANT:  add a way to clear the email and password fields when returning to the login screen
+
+const navigation = useNavigation();
+let { usersName } = useAuth();
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
-        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>Kyle Reed</Text>
-        <DrawerItemList {...props} />
+        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
+        <DrawerItemList {...props}/>
+        <DrawerItem
+          label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
+          onPress={() => { navigation.navigate('Login') }}   // when pressed, it moves users to the Login Screen
+          style={{ backgroundColor: 'red' }} // Customize the background color
+          labelStyle={{ color: 'white' }}    // Customize the label color
+        />
       </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const Error = () => {
-  return (
-    <SafeAreaView style={styles.content}>
-      <Text> You shouldn't be seeing this page </Text>
     </SafeAreaView>
   );
 };
