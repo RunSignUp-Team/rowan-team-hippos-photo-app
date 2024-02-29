@@ -13,38 +13,6 @@ import { DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from './src/components/AuthContext';
 
-
-/*import { useAuth } from './src/components/AuthContext';
-
-
-export function SHeader({title}) {
-  const { usersName, tmpKey } = useAuth();
-  console.log("Test 3: " + usersName);
-  return (
-      <SafeAreaView style={[styles.header, styles.headerWithBottomBar]}>
-      
-        <Text style={styles.headerText}>{title}</Text>
-        <SafeAreaView style={styles.gap}></SafeAreaView>
-      </SafeAreaView>
-  );
-}
-
-function Eader({title}) {
-  const { usersName, tmpKey } = useAuth();
-  console.log("Test 7: " + usersName);
-  return (
-      <SafeAreaView style={[styles.header, styles.headerWithBottomBar]}>
-      
-        <Text style={styles.headerText}>{title}</Text>
-        <SafeAreaView style={styles.gap}></SafeAreaView>
-      </SafeAreaView>
-  );
-}
-
-
-    //<Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
-
-*/
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -52,7 +20,7 @@ export function MyStackNavigator() {
   
   return (
       <Stack.Navigator initialRouteName='Login'>
-      <Stack.Screen name='Login' component={LoginScreen} />
+      <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" />}}/>
       <Stack.Screen name="Test" component={Test} />
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
