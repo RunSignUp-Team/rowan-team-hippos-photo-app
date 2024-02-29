@@ -3,9 +3,9 @@ import React, { createContext, useState } from "react";
 const UserContext = createContext();
 
 function AuthProvider({ children }) {
-  const [tmpKey, setTmpKey] = useState("4");
-  const [tmpSecret, setTmpSecret] = useState("4");
-  const [usersName, setUsersName] = useState("4");
+  const [tmpKey, setTmpKey] = useState(null);
+  const [tmpSecret, setTmpSecret] = useState(null);
+  const [usersName, setUsersName] = useState(null);
 
   console.log("Auth " + tmpKey);
 
