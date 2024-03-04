@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AuthProvider } from '../components/AuthContext';
+
+LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
 
 const HomeScreen = ({ navigation }) => {
     const [raceData, setRaceData] = useState([]);
@@ -40,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
                 races.forEach(race => {
                     let raceName = race.name;
                     let date = race.next_date !== null ? race.next_date : race.last_date;
-                    newData.push({ raceName, date });
+                    newData.push({ raceName, date, race });
                 });
             } catch (error) {
                 failureCallback(error);
@@ -97,9 +99,9 @@ const HomeScreen = ({ navigation }) => {
 
 
 const renderRaceInfo = (navigation, rowData) => {
-    const { raceName, date } = rowData;
+    const { raceName, date, race } = rowData;
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("RacePage")} style={localStyles.touchable}>
+        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={localStyles.touchable}>
             <View style={localStyles.cellContainer}>
                 <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
                 <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
@@ -109,7 +111,7 @@ const renderRaceInfo = (navigation, rowData) => {
 };
 
 const localStyles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+    container: { flex: 1, padding: 16, paddingTop: 30},
     row: { backgroundColor: '#f1f8ff' },
     cellContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
     text: { margin: 6, fontSize: 20 },
@@ -120,14 +122,6 @@ const localStyles = StyleSheet.create({
     failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
     centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1}
 });
-
-const HomeScreenBase = ({ navigation }) => {
-    return (
-        <AuthProvider>
-            <HomeScreen />
-        </AuthProvider>
-    );
-};
 
 export default HomeScreen;
 
