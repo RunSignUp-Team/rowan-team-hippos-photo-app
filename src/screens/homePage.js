@@ -22,7 +22,6 @@ const HomeScreen = ({ navigation }) => {
 
     function failureCallback(error) {
         console.error(`Error getting race list: ${error}`);
-        setRaceError(true);
       }
     
     const fetchRaceData = async () => {
