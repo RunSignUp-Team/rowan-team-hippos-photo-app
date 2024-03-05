@@ -89,10 +89,10 @@ const HomeScreen = ({ navigation }) => {
                         </Table>
                     </ScrollView>
                 )}
-                <FloatingButton style={{bottom:0}}/>
             </View>
-
+            <FloatingButton style={{ bottom: 0 }} />
         </SafeAreaView>
+        
     );
 };
 
