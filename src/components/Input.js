@@ -49,6 +49,9 @@ const Input = ({ navigation }) => {
         // if tmpKey is needed in another file ; import { useAuth } from AuthContext and then const { tmpKey } = useAuth();
         console.log("Input " + tmpKey);
         navigation.navigate('Home'); // Navigate to the Home screen
+        setUsername(''); //set username and password is null for when the users sign out
+        setPassword('');
+        setHasPressed(false); //set has pressed to false so the inputs will not be red
       }
 
     } catch (error) {
