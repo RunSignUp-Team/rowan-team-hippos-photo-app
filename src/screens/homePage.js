@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AuthProvider } from '../components/AuthContext';
 
-LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
+//LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
 
 const HomeScreen = ({ navigation }) => {
     const [raceData, setRaceData] = useState([]);
@@ -34,9 +34,10 @@ const HomeScreen = ({ navigation }) => {
         let raceError = false;
         
             try {
-                //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_secret=${tmpSecret}&format=json&page=1&results_per_page=50&sort=name+ASC&start_date=2030-02-12&distance_units=K`);
-                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=F&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
+                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
                 `);
+                //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
+                //`);
                 let data = await response.json();
                 races = data.races.map(obj => obj.race);
                 races.forEach(race => {
@@ -64,31 +65,36 @@ const HomeScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={localStyles.container}>
-                {raceData.length == 0 ? (
-                    gotRaces == true ? ( 
-                        <View style={localStyles.centerAlign}>
-                            <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
-                        </View>
+                {raceData ? (
+                    raceData.length == 0 ? (
+                        gotRaces == true ? ( 
+                            <View style={localStyles.centerAlign}>
+                                <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+                            </View>
+                        ) : (
+                            <View style={localStyles.centerAlign}>
+                                <Text style={localStyles.noRacesErrorText}>Loading...</Text>
+                            </View>
+                        )
                     ) : (
-                        <View style={localStyles.centerAlign}>
-                            <Text style={localStyles.noRacesErrorText}>Loading...</Text>
-                        </View>
+                        <ScrollView>
+                            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                            {raceData.map((rowData, index) => (
+                                <Row
+                                    key={index}
+                                    data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
+                                    //style={localStyles.row}
+                                    //textStyle={localStyles.text}
+                                    flexArr={[1, 1]} // Adjust column width
+                                />
+                            ))}
+                            </Table>
+                        </ScrollView>
                     )
                 ) : (
-                    <ScrollView>
-                        <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-                        {raceData.map((rowData, index) => (
-                            <Row
-                                key={index}
-                                data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                                //style={localStyles.row}
-                                //textStyle={localStyles.text}
-                                flexArr={[1, 1]} // Adjust column width
-                            />
-                        ))}
-                        </Table>
-                    </ScrollView>
+                    <Text>Error Loading Albums</Text>
                 )}
+                        
             </View>
 
         </SafeAreaView>

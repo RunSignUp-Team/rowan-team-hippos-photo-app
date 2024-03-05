@@ -1,13 +1,62 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { styles } from '../styles/GlobalStyles';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
+import { styles } from '../styles/GlobalStyles';
+import { ScrollView } from 'react-native-gesture-handler';
+import { UserContext } from '../components/AuthContext';
 
 
-export default function Test({ navigation, route }) {
-  const { raceData, date } = route.params;
-  const location = getLocation(raceData);
-  const name = raceData.name;
+
+export default function RacePage({ navigation, route }) {
+    const { raceData, date } = route.params;
+    const location = getLocation(raceData);
+    const name = raceData.name;
+    const race_id = raceData.race_id;
+    const event_days_id = raceData.events[0].race_event_days_id;
+    const [photoAlbumData, setPhotoAlbumData] = useState([]);
+    const [gotPhotoAlbums, setGotPhotoAlbums] = useState(false);
+    useEffect(() => {
+        fetchAlbumData();
+    }, []);
+    const { APIKey, APISecret } = useContext(UserContext);
+    useEffect(() => {
+      console.log("Current tmpKey value:", APIKey);
+      console.log("Current tmpSecret value:", APISecret);
+    }, [APIKey, APISecret]);
+
+    function failureCallback(error) {
+        console.error(`Error getting race list: ${error}`);
+      }
+    
+    const fetchAlbumData = async () => {
+        setGotPhotoAlbums(false);
+        let albums = [];
+        let albumError = false;
+        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photo-albums.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey;
+        const headers = new Headers();
+        headers.append("x-rsu-api-secret", APISecret);
+            try {
+                let response = await fetch(url, {method: "GET", headers: headers})
+                let data = await response.json();
+                console.log(data);
+                albums = data.albums;
+            } catch (error) {
+                failureCallback(error);
+                albumError = true;
+            }
+
+        if (albumError) {
+          albumError = false;
+            Alert.alert(
+                'Error',
+                'Sorry, the system ran into some trouble and some photo albums failed to load. Please try closing and reopening the app.',
+                [{ text: 'OK', style: styles.failedFetchingErrorText }]
+            );
+            }
+        setPhotoAlbumData(albums);
+        setGotPhotoAlbums(true);
+    };
+
   return (
     <View>
         <View style={styles.container}>
@@ -18,41 +67,53 @@ export default function Test({ navigation, route }) {
         <View style={localStyles.linePadding}>
           <View style={localStyles.line}></View>
         </View>
-        <ScrollView>
+        { photoAlbumData ? (
+        photoAlbumData.length == 0 ? (
+          gotPhotoAlbums == true ? ( 
+            <View style={localStyles.centerAlign}>
+                <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+            </View>
+          ) : (
+            <View style={localStyles.centerAlign}>
+                <Text style={localStyles.noRacesErrorText}>Loading...</Text>
+            </View>
+        )
+        ) : (
+          <ScrollView>
           <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-            <Row>
-              <Text>Test</Text>
-            </Row>
-            <Row>
-              <Text>Test</Text>
-            </Row>
-
+          {photoAlbumData.map((rowData, index) => (
+            <Row
+              key={index}
+              data={[renderAlbumInfo(navigation, rowData)]} // Passing as an array
+              //style={localStyles.row}
+              //textStyle={localStyles.text}
+              flexArr={[1, 1]} // Adjust column width
+            />
+          ))}
           </Table>
-        </ScrollView>
+          </ScrollView>
+        )
+        ) : (
+          <Text>Error Loading Albums</Text>
+        )}
     </View>
   );
 }
 
-/*
-            {raceData.map((rowData, index) => (
-              <Row
-                key={index}
-                data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                //style={localStyles.row}
-                //textStyle={localStyles.text}
-                flexArr={[1, 1]} // Adjust column width
-              />
-            ))}
 
-*/
-
-const renderRaceInfo = (navigation, rowData) => {
-  const { raceName, date, race } = rowData;
+const renderAlbumInfo = (navigation, album) => {
   return (
-      <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={localStyles.touchable}>
+      <TouchableOpacity onPress={() => navigation.navigate("Test")} style={localStyles.touchable}>
           <View style={localStyles.cellContainer}>
-              <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
-              <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
+              <Text style={[localStyles.text, localStyles.raceName]}>{album.album_name}</Text>
+              <Text style={[localStyles.text, localStyles.raceName]}>{album.num_photos}</Text>
+              {album.last_modified_ts ? 
+                <Text style={[localStyles.text, localStyles.raceName]}>{album.last_modified_ts}</Text> 
+              : 
+                <Text style={[localStyles.text, localStyles.raceName]}>N/A</Text>
+              }
+              
+              
           </View>
       </TouchableOpacity>
   );
