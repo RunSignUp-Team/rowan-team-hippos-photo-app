@@ -5,6 +5,7 @@ import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AuthProvider } from '../components/AuthContext';
+import FloatingButton from '../components/FloatingButton';
 
 const HomeScreen = ({ navigation }) => {
     const [raceData, setRaceData] = useState([]);
@@ -88,6 +89,7 @@ const HomeScreen = ({ navigation }) => {
                         </Table>
                     </ScrollView>
                 )}
+                <FloatingButton style={{bottom:0}}/>
             </View>
 
         </SafeAreaView>
