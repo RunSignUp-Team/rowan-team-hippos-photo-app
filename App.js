@@ -26,8 +26,6 @@ export function MyStackNavigator() {
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
   );
-
-  
 }
 
 export default function App() {
@@ -52,42 +50,40 @@ const CustomDrawerContent = (props) => {
 
   const { usersName } = useContext(UserContext);
 
-// IMPORTANT:  add a way to clear the email and password fields when returning to the login screen
-
-const navigation = useNavigation();
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
-        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
-        <DrawerItemList {...props}/>
-        <DrawerItem
-          label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
-          onPress={() => { navigation.navigate('Login') }}   // when pressed, it moves users to the Login Screen
-          style={{ backgroundColor: 'red' }} // Customize the background color
-          labelStyle={{ color: 'white' }}    // Customize the label color
-        />
-      </ScrollView>
-    </SafeAreaView>
-  );
+  const navigation = useNavigation();
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
+          <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
+          <DrawerItemList {...props}/>
+          <DrawerItem
+            label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
+            onPress={() => { navigation.navigate('Login') }}   // when pressed, it moves users to the Login Screen
+            style={{ backgroundColor: 'red' }} // Customize the background color
+            labelStyle={{ color: 'white' }}    // Customize the label color
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ef4f9d',
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paddingFlex: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  padding: {
-    width: "2%",
-  },
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#ef4f9d',
+    },
+    content: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paddingFlex: {
+      flex: 1,
+      flexDirection: "row",
+    },
+    padding: {
+      width: "2%",
+    },
 });
 
 

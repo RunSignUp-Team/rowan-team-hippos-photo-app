@@ -40,8 +40,10 @@ const HomeScreen = ({ navigation }) => {
                 races = data.races.map(obj => obj.race);
                 races.forEach(race => {
                     let raceName = race.name;
+                    let raceId = race.race_id; // Store race_id
                     let date = race.next_date !== null ? race.next_date : race.last_date;
-                    newData.push({ raceName, date });
+                    newData.push({ raceName, date, raceId }); // Include raceId here                    
+                    console.log(race.race_id);
                 });
             } catch (error) {
                 failureCallback(error);
@@ -98,9 +100,9 @@ const HomeScreen = ({ navigation }) => {
 
 
 const renderRaceInfo = (navigation, rowData) => {
-    const { raceName, date } = rowData;
+    const { raceName, date, raceId } = rowData; // Extract raceId here
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("RacePage")} style={localStyles.touchable}>
+        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceId })} style={localStyles.touchable}>
             <View style={localStyles.cellContainer}>
                 <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
                 <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
