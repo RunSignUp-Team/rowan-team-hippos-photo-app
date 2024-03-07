@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     closeButton: {
-        position: 'absolute', // Use absolute positioning
-        top: 10, // Distance from the top of the modal
-        right: 10, // Distance from the right of the modal
-        backgroundColor: 'transparent', // Optional: Ensure the background is transparent
-        padding: 10, // Add some padding to make it easier to press
+        position: 'absolute', 
+        top: 10, 
+        right: 10, 
+        backgroundColor: 'transparent',
+        padding: 10,
     },
     textStyle: {
         color: 'white',
@@ -94,16 +94,16 @@ const styles = StyleSheet.create({
         
     },
     buttonStyle: {
-        backgroundColor: 'grey', // Black background
-        padding: 10, // Add padding for size
-        borderRadius: 5, // Rounded corners
+        backgroundColor: 'grey', 
+        padding: 10, 
+        borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: 50,
         minWidth: 100,
     },
     buttonText: {
-        color: 'white', // White text color
+        color: 'white',
         fontWeight: 'bold',
         fontSize: 15,
     },
