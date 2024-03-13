@@ -5,7 +5,7 @@ const CreateAlbum = ({ raceId }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [albumName, setAlbumName] = useState('');
 
-    const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M ";
+    const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
     const API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
     const RACE_EVENT_DAYS_ID = "34168";
 
