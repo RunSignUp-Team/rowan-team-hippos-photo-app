@@ -5,6 +5,8 @@ import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AuthProvider } from '../components/AuthContext';
+import { AntDesign } from "@expo/vector-icons";
+
 
 //LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
 
@@ -34,10 +36,10 @@ const HomeScreen = ({ navigation }) => {
         let raceError = false;
         
             try {
-                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
-                `);
-                //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
+                //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
                 //`);
+                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
+                `);
                 let data = await response.json();
                 races = data.races.map(obj => obj.race);
                 races.forEach(race => {
@@ -65,6 +67,9 @@ const HomeScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={localStyles.container}>
+                <View style={styles.container}>
+                    <Text style={localStyles.title}>Your Races</Text>
+                </View>
                 {raceData ? (
                     raceData.length == 0 ? (
                         gotRaces == true ? ( 
@@ -78,13 +83,13 @@ const HomeScreen = ({ navigation }) => {
                         )
                     ) : (
                         <ScrollView>
-                            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+                            <Table borderStyle={{ borderColor: '#C1C0B9' }}>
                             {raceData.map((rowData, index) => (
                                 <Row
                                     key={index}
                                     data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                                    //style={localStyles.row}
-                                    //textStyle={localStyles.text}
+                                    style={localStyles.row}
+                                    textStyle={localStyles.text}
                                     flexArr={[1, 1]} // Adjust column width
                                 />
                             ))}
@@ -109,24 +114,44 @@ const renderRaceInfo = (navigation, rowData) => {
     return (
         <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={localStyles.touchable}>
             <View style={localStyles.cellContainer}>
-                <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
-                <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
+                <View style={localStyles.textContainer}>
+                    <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
+                    <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
+                </View>
+                <AntDesign style={[localStyles.text, localStyles.arrow]} name="doubleright" />
             </View>
         </TouchableOpacity>
     );
 };
 
 const localStyles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30},
-    row: { backgroundColor: '#f1f8ff' },
-    cellContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
-    text: { margin: 6, fontSize: 20 },
+    container: { flex: 1, padding: 16},
+    row: { 
+        backgroundColor: '#ccc',
+        borderRadius: 10,
+        marginVertical: 3,
+     },
+    cellContainer: { 
+        flexDirection: 'row', 
+        alignItems: 'center',
+     },
+    textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
+    text: { margin: 6 },
     raceName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0 },
     date: { fontSize: 18, paddingBottom: 10 },
     touchable: { flex: 1 },
     noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
     failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
-    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1}
+    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
+    title: {
+        fontSize: 30, 
+        fontWeight: 'bold',
+        paddingBottom: 25,
+    },
+    arrow: {
+        fontSize: 30, 
+        fontWeight: 'bold',
+    },
 });
 
 export default HomeScreen;

@@ -4,6 +4,7 @@ import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
+import { AntDesign } from "@expo/vector-icons";
 
 
 
@@ -60,9 +61,9 @@ export default function RacePage({ navigation, route }) {
   return (
     <View>
         <View style={styles.container}>
-        <Text style={localStyles.name}>{name}</Text>
-        <Text style={localStyles.info}>{date}</Text>
-        <Text style={localStyles.info}>{location}</Text>
+          <Text style={localStyles.name}>{name}</Text>
+          <Text style={localStyles.info}>{date}</Text>
+          <Text style={localStyles.info}>{location}</Text>
         </View>
         <View style={localStyles.linePadding}>
           <View style={localStyles.line}></View>
@@ -79,19 +80,21 @@ export default function RacePage({ navigation, route }) {
             </View>
         )
         ) : (
+          <View style={localStyles.container}>
           <ScrollView>
-          <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+          <Table borderStyle={{ borderColor: '#C1C0B9' }}>
           {photoAlbumData.map((rowData, index) => (
             <Row
               key={index}
               data={[renderAlbumInfo(navigation, rowData)]} // Passing as an array
-              //style={localStyles.row}
-              //textStyle={localStyles.text}
+              style={localStyles.row}
+              textStyle={localStyles.text}
               flexArr={[1, 1]} // Adjust column width
             />
           ))}
           </Table>
           </ScrollView>
+          </View>
         )
         ) : (
           <Text>Error Loading Albums</Text>
@@ -102,30 +105,42 @@ export default function RacePage({ navigation, route }) {
 
 
 const renderAlbumInfo = (navigation, album) => {
+  const currentDate = new Date();
+  const lastModified = new Date(1000 * album.last_modified_ts);
+  const localDate = lastModified.toLocaleDateString(); 
   return (
       <TouchableOpacity onPress={() => navigation.navigate("Test")} style={localStyles.touchable}>
           <View style={localStyles.cellContainer}>
-              <Text style={[localStyles.text, localStyles.raceName]}>{album.album_name}</Text>
-              <Text style={[localStyles.text, localStyles.raceName]}>{album.num_photos}</Text>
-              {album.last_modified_ts ? 
-                <Text style={[localStyles.text, localStyles.raceName]}>{album.last_modified_ts}</Text> 
-              : 
-                <Text style={[localStyles.text, localStyles.raceName]}>N/A</Text>
+            <View style={localStyles.textContainer}>
+                <Text style={[localStyles.text, localStyles.albumName]}>{album.album_name}</Text>
+                <Text style={[localStyles.text, localStyles.numPhotos]}>{album.num_photos} Photos</Text>
+              {album.last_modified_ts &&
+                <Text style={[localStyles.text, localStyles.raceName]}>Last Modified: {localDate}</Text> 
+              //: 
+                //<Text style={[localStyles.text, localStyles.raceName]}>Last Modified: N/A</Text>
               }
-              
-              
+            </View>  
+            <AntDesign style={[localStyles.text, localStyles.arrow]} name="doubleright" />
           </View>
       </TouchableOpacity>
   );
 };
 
 const localStyles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30},
-  row: { backgroundColor: '#f1f8ff' },
-  cellContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
+  container: { padding: 16 },
+  row: { 
+    backgroundColor: '#ccc',
+    borderRadius: 10,
+    marginVertical: 3,
+  },  
+  cellContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center',
+  },
+  textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
   text: { margin: 6, fontSize: 20 },
-  raceName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0 },
-  date: { fontSize: 18, paddingBottom: 10 },
+  albumName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0},
+  numPhotos: { fontSize: 20 , paddingRight: 10},
   touchable: { flex: 1 },
   noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
   failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
@@ -144,7 +159,11 @@ const localStyles = StyleSheet.create({
   },
   linePadding: {
     paddingVertical: 20
-  }
+  },
+  arrow: {
+    fontSize: 30, 
+    fontWeight: 'bold',
+},
 });
 
 const getLocation = (raceData) => {
