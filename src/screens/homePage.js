@@ -12,6 +12,7 @@ const HomeScreen = ({ navigation }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
+        console.log("toggleMenu called in HomeScreen", !isMenuOpen);
         setIsMenuOpen(!isMenuOpen);
     };
     const [raceData, setRaceData] = useState([]);
@@ -103,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
                     <View style={tyles.overlay} />
                 </TouchableWithoutFeedback>
             )}
-            <FloatingButton isOpen={isMenuOpen}style={{bottom:0}} toggleMenu={toggleMenu} />
+            <FloatingButton isOpen={isMenuOpen}style={{bottom:0}} onToggleRequest={toggleMenu} />
             
         </SafeAreaView>
         

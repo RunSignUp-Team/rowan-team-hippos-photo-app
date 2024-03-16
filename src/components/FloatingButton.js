@@ -1,160 +1,137 @@
 import React from "react";
-import {View, Text, StyleSheet,} from "react-native";
-import {Animated, TouchableWithoutFeedback, Dimensions} from "react-native";
-import {AntDesign, Entypo, MaterialIcons} from "@expo/vector-icons";
+import { View, StyleSheet, Animated, TouchableWithoutFeedback } from "react-native";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 
 export default class FloatingButton extends React.Component {
     animation = new Animated.Value(0);
-    open = false;
+
     componentDidUpdate(prevProps) {
         if (prevProps.isOpen !== this.props.isOpen) {
             this.toggleMenu();
         }
     }
+
     toggleMenu = () => {
-        const toValue = this.open ? 0 : 1;
+        const toValue = this.props.isOpen ? 1 : 0;
         Animated.spring(this.animation, {
             toValue,
             friction: 5,
-            useNativeDriver: true
+            useNativeDriver: false,
         }).start();
-        this.open = !this.open;
-
-
     }
+
     render() {
-        const pinStyle = {
-            transform: [
-                {scale: this.animation},
-                {
-                    translateY: this.animation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, -60]
-                    })
-                }
-            ]
-        }
-        const imageStyle = {
+        const buttonStyle = { zIndex: 10 }; // Ensure buttons are always above the overlay
+        const pinStyle = this.createButtonAnimationStyle(-60, buttonStyle);
+        const imageStyle = this.createButtonAnimationStyle(-120, buttonStyle);
+        const liveStreamStyle = this.createButtonAnimationStyle(-180, buttonStyle);
+        const rotation = this.createRotationStyle();
+        const overlayStyle = this.createOverlayStyle();
+
+        return (
+            <View style={styles.container}>
+                {this.renderButton("live-tv", liveStreamStyle, MaterialIcons)}
+                {this.renderButton("image", imageStyle, Entypo)}
+                {this.renderButton("folder-images", pinStyle, Entypo)}
+                <TouchableWithoutFeedback onPress={this.props.onToggleRequest}>
+                    <Animated.View style={[styles.menu, styles.button, rotation, buttonStyle]}>
+                        <AntDesign name="plus" size={36} color="#FFF" />
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={this.props.onToggleRequest}>
+                    <Animated.View style={[styles.overlay, overlayStyle]} />
+                </TouchableWithoutFeedback>
+            </View>
+        );
+    }
+
+    createButtonAnimationStyle(translateY, additionalStyle = {}) {
+        return {
+            ...additionalStyle,
             transform: [
                 { scale: this.animation },
                 {
                     translateY: this.animation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, -120]
-                    })
-                }
-            ]
-        }
-        const liveStreamStyle = {
-            transform: [
-                { scale: this.animation },
-                {
-                    translateY: this.animation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, -180]
-                    })
-                }
-            ]
-        }
-        const rotation = {
+                        outputRange: [0, translateY],
+                    }),
+                },
+            ],
+        };
+    }
+
+    createRotationStyle() {
+        return {
             transform: [
                 {
                     rotate: this.animation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: ['0deg', '45deg']
-                    })
-                }
-            ]
-        }
-        const opacity = this.animation.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [0, 0, 1]
-        })
-        
+                        outputRange: ["0deg", "45deg"],
+                    }),
+                },
+            ],
+        };
+    }
 
-        const backgroundColor = this.animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'] 
-        });
+    createOverlayStyle() {
+        return {
+            opacity: this.animation,
+            zIndex: this.animation.interpolate({
+                inputRange: [0, 0.01],
+                outputRange: [-1, 2],
+                extrapolate: "clamp",
+            }),
+        };
+    }
+
+    renderButton(iconName, style, IconComponent) {
         return (
-            <View style={[styles.container, this.props.style]}>
-                <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button, styles.secondary, liveStreamStyle]}>
-                        <MaterialIcons name="live-tv" size={36} color="#FFF" />
-                        
-                    </Animated.View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button, styles.secondary, imageStyle]}>
-                        <Entypo name="image" size={36} color="#FFF" />
-                    </Animated.View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button,styles.secondary, pinStyle]}>
-                        <Entypo name="folder-images" size={36} color="#FFF" />
-                    </Animated.View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => {
-                    this.toggleMenu();
-                    this.props.toggleMenu?.(!this.open);
-                }}>
-                    <Animated.View style={[styles.menu, styles.button, rotation]}>
-                        <AntDesign name="plus" size={36} color="#FFF" />
-                    </Animated.View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() =>{
-                    if(this.opne){
-                        this.toggleMenu();
-                        this.props.toggleMenu?.(!this.open);
-                    }
-                }}>
-                    <Animated.View style={[styles.overlay, { opacity: this.animation.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }) }]} />
-
-                </TouchableWithoutFeedback>
-                
-            </View>
+            <TouchableWithoutFeedback>
+                <Animated.View style={[styles.button, styles.secondary, style]}>
+                    <IconComponent name={iconName} size={24} color="#FFF" />
+                </Animated.View>
+            </TouchableWithoutFeedback>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container:{
-        alignItems: 'center',
-        position: 'absolute',
+    container: {
+        alignItems: "center",
+        position: "absolute",
         top: 700,
-        right: 50
+        right: 50,
     },
-    button:{
-        position: 'absolute',
+    button: {
+        position: "absolute",
         width: 60,
         height: 60,
         borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
         shadowRadius: 10,
-        shadowColor: '#F02A4B',
+        shadowColor: "#F02A4B",
         shadowOpacity: 0.3,
-        shadowOffset: {height: 10}
+        shadowOffset: { height: 10 },
+        zIndex: 10,
     },
-    menu:{
-        backgroundColor: '#ef4f9d'
-    },  
-    secondary:{
+    menu: {
+        backgroundColor: "#ef4f9d",
+    },
+    secondary: {
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#41444B'
+        backgroundColor: "#41444B",
     },
     overlay: {
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.8)', 
-        width: '100%',
-        height: '100%',
-        
-    }
-
+        backgroundColor: "rgba(0,0,0,0.8)",
+        width: "100%",
+        height: "100%",
+    },
 });
