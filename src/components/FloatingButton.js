@@ -1,10 +1,16 @@
 import React from "react";
 import {View, Text, StyleSheet,} from "react-native";
 import {Animated, TouchableWithoutFeedback, Dimensions} from "react-native";
-import {AntDesign, Entypo} from "@expo/vector-icons";
+import {AntDesign, Entypo, MaterialIcons} from "@expo/vector-icons";
 
 export default class FloatingButton extends React.Component {
     animation = new Animated.Value(0);
+    open = false;
+    componentDidUpdate(prevProps) {
+        if (prevProps.isOpen !== this.props.isOpen) {
+            this.toggleMenu();
+        }
+    }
     toggleMenu = () => {
         const toValue = this.open ? 0 : 1;
         Animated.spring(this.animation, {
@@ -13,6 +19,8 @@ export default class FloatingButton extends React.Component {
             useNativeDriver: true
         }).start();
         this.open = !this.open;
+
+
     }
     render() {
         const pinStyle = {
@@ -21,7 +29,29 @@ export default class FloatingButton extends React.Component {
                 {
                     translateY: this.animation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, -80]
+                        outputRange: [0, -60]
+                    })
+                }
+            ]
+        }
+        const imageStyle = {
+            transform: [
+                { scale: this.animation },
+                {
+                    translateY: this.animation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, -120]
+                    })
+                }
+            ]
+        }
+        const liveStreamStyle = {
+            transform: [
+                { scale: this.animation },
+                {
+                    translateY: this.animation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, -180]
                     })
                 }
             ]
@@ -40,37 +70,48 @@ export default class FloatingButton extends React.Component {
             inputRange: [0, 0.5, 1],
             outputRange: [0, 0, 1]
         })
-        const overlayStyle = {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: Dimensions.get('window').width,
-            height: Dimensions.get('window').height,
-            backgroundColor: 'rgba(0,0,0,0.8)'
-        };
+        
 
         const backgroundColor = this.animation.interpolate({
             inputRange: [0, 1],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'] // Change end value for desired background color
+            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'] 
         });
         return (
             <View style={[styles.container, this.props.style]}>
                 <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button, styles.secondary]}>
-                        <Entypo name="thumbs-up" size={36} color="#FFF" />
+                    <Animated.View style={[styles.button, styles.secondary, liveStreamStyle]}>
+                        <MaterialIcons name="live-tv" size={36} color="#FFF" />
+                        
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback>
+                    <Animated.View style={[styles.button, styles.secondary, imageStyle]}>
+                        <Entypo name="image" size={36} color="#FFF" />
                     </Animated.View>
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback>
                     <Animated.View style={[styles.button,styles.secondary, pinStyle]}>
-                        <Entypo name="location-pin" size={36} color="#FFF" />
+                        <Entypo name="folder-images" size={36} color="#FFF" />
                     </Animated.View>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={this.toggleMenu}>
+                <TouchableWithoutFeedback onPress={() => {
+                    this.toggleMenu();
+                    this.props.toggleMenu?.(!this.open);
+                }}>
                     <Animated.View style={[styles.menu, styles.button, rotation]}>
                         <AntDesign name="plus" size={36} color="#FFF" />
                     </Animated.View>
                 </TouchableWithoutFeedback>
-                <Animated.View style={[styles.overlayStyle, { opacity }, { backgroundColor }]} pointerEvents={this.open ? 'auto' : 'none'} />
+                <TouchableWithoutFeedback onPress={() =>{
+                    if(this.opne){
+                        this.toggleMenu();
+                        this.props.toggleMenu?.(!this.open);
+                    }
+                }}>
+                    <Animated.View style={[styles.overlay, { opacity: this.animation.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }) }]} />
+
+                </TouchableWithoutFeedback>
+                
             </View>
         );
     }
@@ -110,9 +151,10 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'black', // The color should be set here
+        backgroundColor: 'rgba(0,0,0,0.8)', 
         width: '100%',
         height: '100%',
+        
     }
 
 });
