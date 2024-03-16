@@ -9,9 +9,12 @@ import { AntDesign } from "@expo/vector-icons";
 
 
 export default function RacePage({ navigation, route }) {
-    const { raceData, date } = route.params;
-    const location = getLocation(raceData);
-    const name = raceData.name;
+    const { albumData } = route.params;
+    const name = albumData.album_name;
+    const photosNum = albumData.num_photos;
+
+    /*const location = getLocation(raceData);
+    
     const race_id = raceData.race_id;
     const event_days_id = raceData.events[0].race_event_days_id;
     const [photoAlbumData, setPhotoAlbumData] = useState([]);
@@ -57,79 +60,27 @@ export default function RacePage({ navigation, route }) {
             }
         setPhotoAlbumData(albums);
         setGotPhotoAlbums(true);
-    };
+    };*/
 
   return (
     <SafeAreaView style={styles.safeArea}>
         <View style={styles.paddedContainer}>
           <Text style={styles.title2}>{name}</Text>
-          <Text style={styles.titleInfo}>{date}</Text>
-          <Text style={styles.titleInfo}>{location}</Text>
+          <Text style={styles.titleInfo}>{photosNum} Photo{photosNum == 1 ? '' : 's'}</Text>
         </View>
         <View style={styles.line}></View>
         <View style={styles.paddedContainer}>
           <View style={{paddingBottom: 16}}>
-            <Text style={styles.title2}>Albums</Text>
+            <Text style={styles.title2}>Photos</Text>
           </View>
-        { photoAlbumData ? (
-        photoAlbumData.length == 0 ? (
-          gotPhotoAlbums == true ? ( 
-            <View style={styles.centerAlign}>
-                <Text style={styles.errorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
-            </View>
-          ) : (
-            <View style={styles.centerAlign}>
-                <Text style={styles.errorText}>Loading...</Text>
-            </View>
-        )
-        ) : (
-          <ScrollView>
-          <Table borderStyle={{ borderColor: '#C1C0B9' }}>
-          {photoAlbumData.map((rowData, index) => (
-            <Row
-              key={index}
-              data={[renderAlbumInfo(navigation, rowData)]} // Passing as an array
-              style={styles.row}
-              //textStyle={localStyles.text}
-              flexArr={[1, 1]} // Adjust column width
-            />
-          ))}
-          </Table>
-          </ScrollView>
-        )
-        ) : (
-          <Text>Error Loading Albums</Text>
-        )}
+
       </View>
     </SafeAreaView>
   );
 }
 
 
-const renderAlbumInfo = (navigation, album) => {
-  const lastModified = new Date(1000 * album.last_modified_ts);
-  const localDate = lastModified.toLocaleDateString(); 
-  return (
-      <TouchableOpacity onPress={() => navigation.navigate("AlbumPage", { albumData: album })} style={styles.touchable}>
-          <View style={styles.cellContainer}>
-            <View style={styles.textContainer}>
-                <Text style={[styles.rowTextMargin, styles.rowTextBold]}>{album.album_name}</Text>
-                <Text style={[styles.rowTextMargin, styles.rowText]}>{album.num_photos} Photo{album.num_photos == 1 ? '' : 's'}</Text>
-              {album.last_modified_ts &&
-                <Text style={[styles.rowTextMargin, styles.rowText]}>Last Modified: {localDate}</Text> 
-              //: 
-                //<Text style={[localStyles.text, localStyles.raceName]}>Last Modified: N/A</Text>
-              }
-            </View>  
-            <AntDesign style={[styles.rowTextMargin, styles.arrow]} name="doubleright" />
-          </View>
-      </TouchableOpacity>
-  );
-};
 
-const getLocation = (raceData) => {
-  return (raceData.address.street + ", " + raceData.address.city + ", " + raceData.address.state + " " + raceData.address.zipcode);
-};
 
 
 

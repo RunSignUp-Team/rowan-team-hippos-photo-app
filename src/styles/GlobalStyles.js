@@ -50,5 +50,44 @@ export const styles = StyleSheet.create({
     container: {
         paddingTop: 10,
         paddingHorizontal: 5,
-    }
+    },
+    paddedContainer: {
+        padding: 16,
+    },
+    row: { 
+        backgroundColor: '#ccc',
+        borderRadius: 10,
+        marginVertical: 3,
+     },
+    cellContainer: { 
+        flexDirection: 'row', 
+        alignItems: 'center',
+     },
+    textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, paddingVertical: 5},
+    rowTextMargin: { marginHorizontal: 6 },
+    rowTextBold: { fontSize: 20, fontWeight: 'bold', paddingVertical: 5 },
+    rowText: { fontSize: 18, paddingVertical: 5 },
+    touchable: { flex: 1 },
+    errorText: { margin: 6, fontSize: 20, textAlign:'center' },
+    failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
+    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
+    title1: {
+        fontSize: 30, 
+        fontWeight: 'bold',
+    },
+    title2: {
+        fontSize: 24, 
+        fontWeight: 'bold',
+    },
+    titleInfo: {
+        fontSize: 18,
+    },
+    arrow: {
+        fontSize: 30, 
+        fontWeight: 'bold',
+    },
+    line: {
+        height: 5,
+        backgroundColor: '#ddd',
+    },
 });

@@ -66,19 +66,17 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={localStyles.container}>
-                <View style={styles.container}>
-                    <Text style={localStyles.title}>Your Races</Text>
-                </View>
+            <View style={styles.paddedContainer}>
+                <Text style={[styles.title1, styles.container, {paddingBottom: 25}]}>Your Races</Text>
                 {raceData ? (
                     raceData.length == 0 ? (
                         gotRaces == true ? ( 
-                            <View style={localStyles.centerAlign}>
-                                <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+                            <View style={styles.centerAlign}>
+                                <Text style={styles.errorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
                             </View>
                         ) : (
-                            <View style={localStyles.centerAlign}>
-                                <Text style={localStyles.noRacesErrorText}>Loading...</Text>
+                            <View style={styles.centerAlign}>
+                                <Text style={styles.errorText}>Loading...</Text>
                             </View>
                         )
                     ) : (
@@ -88,8 +86,8 @@ const HomeScreen = ({ navigation }) => {
                                 <Row
                                     key={index}
                                     data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                                    style={localStyles.row}
-                                    textStyle={localStyles.text}
+                                    style={styles.row}
+                                    textStyle={styles.rowTextMargin}
                                     flexArr={[1, 1]} // Adjust column width
                                 />
                             ))}
@@ -98,10 +96,8 @@ const HomeScreen = ({ navigation }) => {
                     )
                 ) : (
                     <Text>Error Loading Albums</Text>
-                )}
-                        
+                )}         
             </View>
-
         </SafeAreaView>
     );
 };
@@ -112,46 +108,20 @@ const HomeScreen = ({ navigation }) => {
 const renderRaceInfo = (navigation, rowData) => {
     const { raceName, date, race } = rowData;
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={localStyles.touchable}>
-            <View style={localStyles.cellContainer}>
-                <View style={localStyles.textContainer}>
-                    <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
-                    <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={styles.touchable}>
+            <View style={styles.cellContainer}>
+                <View style={styles.textContainer}>
+                    <Text style={[styles.rowTextMargin, styles.rowTextBold]}>{raceName}</Text>
+                    <Text style={[styles.rowTextMargin, styles.rowText]}>{date}</Text>
                 </View>
-                <AntDesign style={[localStyles.text, localStyles.arrow]} name="doubleright" />
+                <AntDesign style={[styles.rowTextMargin, styles.arrow]} name="doubleright" />
             </View>
         </TouchableOpacity>
     );
 };
 
 const localStyles = StyleSheet.create({
-    container: { flex: 1, padding: 16},
-    row: { 
-        backgroundColor: '#ccc',
-        borderRadius: 10,
-        marginVertical: 3,
-     },
-    cellContainer: { 
-        flexDirection: 'row', 
-        alignItems: 'center',
-     },
-    textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
-    text: { margin: 6 },
-    raceName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0 },
-    date: { fontSize: 18, paddingBottom: 10 },
-    touchable: { flex: 1 },
-    noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
-    failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
-    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
-    title: {
-        fontSize: 30, 
-        fontWeight: 'bold',
-        paddingBottom: 25,
-    },
-    arrow: {
-        fontSize: 30, 
-        fontWeight: 'bold',
-    },
+    
 });
 
 export default HomeScreen;
