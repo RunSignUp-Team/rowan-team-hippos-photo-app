@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
     login_container: {
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
         alignContent: 'center',
         marginBottom: 80,
         fontSize: 45,
-        fontFamily: 'Apple SD Gothic Neo',
+        fontFamily: Platform.OS === 'ios' ? 'Apple SD Gothic Neo' : '',
     },
     loginScreen_container: {
         flex: 1,

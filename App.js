@@ -21,8 +21,8 @@ export function MyStackNavigator() {
   return (
       <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" />}}/>
-      <Stack.Screen name="Test" component={Test} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" showHamburgerMenu={true}/>}}/>
+      <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Albums" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
   );

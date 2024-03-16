@@ -6,38 +6,6 @@ export const styles = StyleSheet.create({
         //backgroundColor: 'rgba(200, 200, 52, 0)', // Pink background for the entire safe area
     },
     header: {
-        backgroundColor: 'lightblue',
-        paddingTop: StatusBar.currentHeight + 20,
-        paddingBottom: 20,
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    headerText: {
-        color: 'black',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        fontSize: 22,
-        width: '50%',
-    },
-    content: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    menuButton: {
-        left: 20,
-        zIndex: 1,
-        width: '25%',
-    },
-    gap: {
-        width: '25%',
-    },
-    headerWithBottomBar: {
-        paddingBottom: 20, // Adjust this value as needed
-        borderBottomWidth: 2,
-        borderBottomColor: 'black',
-    },
-    header: {
         //backgroundColor: 'lightblue',
         paddingTop: StatusBar.currentHeight + 20,
         paddingBottom: 20,
@@ -64,10 +32,13 @@ export const styles = StyleSheet.create({
     gap: {
         width: '25%',
     },
-    headerWithBottomBar: {
-        paddingBottom: 20, // Adjust this value as needed
-        borderBottomWidth: 2,
-        borderBottomColor: 'black',
+    headerBlackBar: {
+        //paddingBottom: 20, // Adjust this value as needed
+        height: 2,
+        backgroundColor: 'black',
+    },
+    headerBarPadding: {
+        paddingBottom: 10, // Adjust this value as needed
     },
     paddingFlex: {
         flex: 1,
@@ -76,4 +47,8 @@ export const styles = StyleSheet.create({
     padding: {
         width: "2%",
     },
+    container: {
+        paddingTop: 10,
+        paddingHorizontal: 5,
+    }
 });
