@@ -1,13 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AuthProvider } from '../components/AuthContext';
 import FloatingButton from '../components/FloatingButton';
+<script src="http://localhost:8097"></script>
 
 const HomeScreen = ({ navigation }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
     const [raceData, setRaceData] = useState([]);
     const [gotRaces, setGotRaces] = useState(false);
     useEffect(() => {
@@ -89,8 +95,16 @@ const HomeScreen = ({ navigation }) => {
                         </Table>
                     </ScrollView>
                 )}
+                
+                
             </View>
-            <FloatingButton style={{ bottom: 0 }} />
+            {isMenuOpen && (
+                <TouchableWithoutFeedback onPress={toggleMenu}>
+                    <View style={tyles.overlay} />
+                </TouchableWithoutFeedback>
+            )}
+            <FloatingButton isOpen={isMenuOpen}style={{bottom:0}} toggleMenu={toggleMenu} />
+            
         </SafeAreaView>
         
     );
@@ -131,6 +145,18 @@ const HomeScreenBase = ({ navigation }) => {
         </AuthProvider>
     );
 };
+
+const tyles = StyleSheet.create({
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        zIndex: 999,
+    },
+});
 
 export default HomeScreen;
 
