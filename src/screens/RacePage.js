@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
+import FloatingButton from '../components/FloatingButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
