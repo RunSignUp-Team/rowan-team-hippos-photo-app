@@ -99,12 +99,22 @@ const HomeScreen = ({ navigation }) => {
                 
                 
             </View>
+            
             {isMenuOpen && (
-                <TouchableWithoutFeedback onPress={toggleMenu}>
-                    <View style={tyles.overlay} />
+                <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
+                    <View style={tyles.fullScreen}>
+                        {// if isMenuOpen is ture, then the overlay will be visible
+                            isMenuOpen && (
+                            <View style={[tyles.overlay, StyleSheet.absoluteFillObject]} />
+                            
+                        )}
+                    </View>
                 </TouchableWithoutFeedback>
             )}
-            <FloatingButton isOpen={isMenuOpen}style={{bottom:0}} onToggleRequest={toggleMenu} />
+            {// to display the floating button and also to pass the toggleMenu function to the floating 
+            //button
+            }
+            <FloatingButton isOpenProp={isMenuOpen}  onToggleRequest={toggleMenu} />
             
         </SafeAreaView>
         
@@ -149,14 +159,25 @@ const HomeScreenBase = ({ navigation }) => {
 
 const tyles = StyleSheet.create({
     overlay: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        zIndex: 999,
+        zIndex: 1,
     },
+    fullScreen: {
+        position: 'absolute', 
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });
 
 export default HomeScreen;
