@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
-import { AuthProvider } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
+import FloatingButton from '../components/FloatingButton';
 
 
 //LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
 
 const HomeScreen = ({ navigation }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        console.log("toggleMenu called in HomeScreen", !isMenuOpen);
+        setIsMenuOpen(!isMenuOpen);
+    };
     const [raceData, setRaceData] = useState([]);
     const [gotRaces, setGotRaces] = useState(false);
     useEffect(() => {
@@ -37,8 +43,7 @@ const HomeScreen = ({ navigation }) => {
             try {
                 //let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
                 //`);
-                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K
-                `);
+                let response = await fetch(`https://test3.runsignup.com/Rest/races?tmp_key=${tmpKey}&tmp_secret=${tmpSecret}&format=json&events=T&race_headings=F&race_links=F&include_waiver=F&include_multiple_waivers=F&include_event_days=F&include_extra_date_info=F&page=1&results_per_page=50&sort=name+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&distance_units=K`);
                 let data = await response.json();
                 console.log(JSON.stringify(data)+"testing");
                 races = data.races.map(obj => obj.race);
@@ -67,19 +72,17 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={localStyles.container}>
-                <View style={styles.container}>
-                    <Text style={localStyles.title}>Your Races</Text>
-                </View>
+            <View style={styles.paddedContainer}>
+                <Text style={[styles.title1, styles.container, {paddingBottom: 25}]}>Your Races</Text>
                 {raceData ? (
                     raceData.length == 0 ? (
                         gotRaces == true ? ( 
-                            <View style={localStyles.centerAlign}>
-                                <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+                            <View style={styles.centerAlign}>
+                                <Text style={styles.errorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
                             </View>
                         ) : (
-                            <View style={localStyles.centerAlign}>
-                                <Text style={localStyles.noRacesErrorText}>Loading...</Text>
+                            <View style={{paddingTop: 200}}>
+                                <ActivityIndicator size="large" color="#0088ff"/>
                             </View>
                         )
                     ) : (
@@ -89,8 +92,8 @@ const HomeScreen = ({ navigation }) => {
                                 <Row
                                     key={index}
                                     data={[renderRaceInfo(navigation, rowData)]} // Passing as an array
-                                    style={localStyles.row}
-                                    textStyle={localStyles.text}
+                                    style={styles.row}
+                                    textStyle={styles.rowTextMargin}
                                     flexArr={[1, 1]} // Adjust column width
                                 />
                             ))}
@@ -99,11 +102,27 @@ const HomeScreen = ({ navigation }) => {
                     )
                 ) : (
                     <Text>Error Loading Albums</Text>
-                )}
-                        
+                )}     
             </View>
-
+            
+            {isMenuOpen && (
+                <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
+                    <View style={tyles.fullScreen}>
+                        {// if isMenuOpen is ture, then the overlay will be visible
+                            isMenuOpen && (
+                            <View style={[tyles.overlay, StyleSheet.absoluteFillObject]} />
+                            
+                        )}
+                    </View>
+                </TouchableWithoutFeedback>
+            )}
+            {// to display the floating button and also to pass the toggleMenu function to the floating 
+            //button
+            }
+            <FloatingButton isOpenProp={isMenuOpen}  onToggleRequest={toggleMenu} />
+            
         </SafeAreaView>
+        
     );
 };
 
@@ -113,46 +132,51 @@ const HomeScreen = ({ navigation }) => {
 const renderRaceInfo = (navigation, rowData) => {
     const { raceName, date, race } = rowData;
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={localStyles.touchable}>
-            <View style={localStyles.cellContainer}>
-                <View style={localStyles.textContainer}>
-                    <Text style={[localStyles.text, localStyles.raceName]}>{raceName}</Text>
-                    <Text style={[localStyles.text, localStyles.date]}>{date}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("RacePage", { raceData: race, date: date })} style={styles.touchable}>
+            <View style={styles.cellContainer}>
+                <View style={styles.textContainer}>
+                    <Text style={[styles.rowTextMargin, styles.rowTextBold]}>{raceName}</Text>
+                    <Text style={[styles.rowTextMargin, styles.rowText]}>{date}</Text>
                 </View>
-                <AntDesign style={[localStyles.text, localStyles.arrow]} name="doubleright" />
+                <AntDesign style={[styles.rowTextMargin, styles.arrow]} name="doubleright" />
             </View>
         </TouchableOpacity>
     );
 };
 
 const localStyles = StyleSheet.create({
-    container: { flex: 1, padding: 16},
-    row: { 
-        backgroundColor: '#ccc',
-        borderRadius: 10,
-        marginVertical: 3,
-     },
-    cellContainer: { 
-        flexDirection: 'row', 
+    
+});
+
+const HomeScreenBase = ({ navigation }) => {
+    return (
+        <AuthProvider>
+            <HomeScreen />
+        </AuthProvider>
+    );
+};
+
+const tyles = StyleSheet.create({
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1,
+    },
+    fullScreen: {
+        position: 'absolute', 
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
         alignItems: 'center',
-     },
-    textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
-    text: { margin: 6 },
-    raceName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0 },
-    date: { fontSize: 18, paddingBottom: 10 },
-    touchable: { flex: 1 },
-    noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
-    failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
-    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
-    title: {
-        fontSize: 30, 
-        fontWeight: 'bold',
-        paddingBottom: 25,
-    },
-    arrow: {
-        fontSize: 30, 
-        fontWeight: 'bold',
-    },
+    }
 });
 
 export default HomeScreen;
