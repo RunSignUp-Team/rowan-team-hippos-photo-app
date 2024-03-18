@@ -13,9 +13,16 @@ import { DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from './src/components/AuthContext';
+import FloatingButton from './src/components/FloatingButton';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+const ConditionalFloatingButton = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const shouldshowFloatingButton = navigation.getState().routeNames[navigation.getState().index] !== 'Login';
+  return shouldshowFloatingButton ? <FloatingButton style={{ bottom: 0 }} /> : null;
+};
 
 export function MyStackNavigator() {
   
@@ -27,6 +34,7 @@ export function MyStackNavigator() {
       <Stack.Screen name="AlbumPage" component={AlbumPage} options={{ header: () => <Header title="Album Page" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
+    
   );
 
   

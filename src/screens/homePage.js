@@ -1,15 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
+import FloatingButton from '../components/FloatingButton';
 
 
 //LogBox.ignoreLogs(['Invalid prop textStyle of type array supplied to Cell']);
 
 const HomeScreen = ({ navigation }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        console.log("toggleMenu called in HomeScreen", !isMenuOpen);
+        setIsMenuOpen(!isMenuOpen);
+    };
     const [raceData, setRaceData] = useState([]);
     const [gotRaces, setGotRaces] = useState(false);
     useEffect(() => {
@@ -95,9 +102,27 @@ const HomeScreen = ({ navigation }) => {
                     )
                 ) : (
                     <Text>Error Loading Albums</Text>
-                )}         
+                )}     
             </View>
+            
+            {isMenuOpen && (
+                <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
+                    <View style={tyles.fullScreen}>
+                        {// if isMenuOpen is ture, then the overlay will be visible
+                            isMenuOpen && (
+                            <View style={[tyles.overlay, StyleSheet.absoluteFillObject]} />
+                            
+                        )}
+                    </View>
+                </TouchableWithoutFeedback>
+            )}
+            {// to display the floating button and also to pass the toggleMenu function to the floating 
+            //button
+            }
+            <FloatingButton isOpenProp={isMenuOpen}  onToggleRequest={toggleMenu} />
+            
         </SafeAreaView>
+        
     );
 };
 
@@ -121,6 +146,37 @@ const renderRaceInfo = (navigation, rowData) => {
 
 const localStyles = StyleSheet.create({
     
+});
+
+const HomeScreenBase = ({ navigation }) => {
+    return (
+        <AuthProvider>
+            <HomeScreen />
+        </AuthProvider>
+    );
+};
+
+const tyles = StyleSheet.create({
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1,
+    },
+    fullScreen: {
+        position: 'absolute', 
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });
 
 export default HomeScreen;
