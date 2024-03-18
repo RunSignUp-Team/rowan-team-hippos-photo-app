@@ -22,6 +22,9 @@ const CreateAlbum = ({ raceId }) => {
         try {
           const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}`, {
             method: 'POST',
+            headers: {
+                'x-rsu-api-secret': API_SECRET, // Assuming your API requires a secret header
+            },
             body: formData,
           });
       
