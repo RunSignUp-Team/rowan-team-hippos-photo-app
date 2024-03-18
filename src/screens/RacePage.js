@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -39,8 +39,6 @@ export default function RacePage({ navigation, route }) {
             try {
                 let response = await fetch(url, {method: "GET", headers: headers})
                 let data = await response.json();
-                console.log(data);
-                console.log(race_id);
                 albums = data.albums;
             } catch (error) {
                 failureCallback(error);
@@ -75,11 +73,11 @@ export default function RacePage({ navigation, route }) {
         photoAlbumData.length == 0 ? (
           gotPhotoAlbums == true ? ( 
             <View style={styles.centerAlign}>
-                <Text style={styles.errorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+              <Text style={styles.errorText}>Failed to load any albums. Make sure your internet connection is stable then close and reopen the app.</Text>
             </View>
           ) : (
-            <View style={styles.centerAlign}>
-                <Text style={styles.errorText}>Loading...</Text>
+            <View style={{paddingTop: 200}}>
+              <ActivityIndicator size="large" color="#0088ff"/>
             </View>
         )
         ) : (
@@ -88,7 +86,7 @@ export default function RacePage({ navigation, route }) {
           {photoAlbumData.map((rowData, index) => (
             <Row
               key={index}
-              data={[renderAlbumInfo(navigation, rowData)]} // Passing as an array
+              data={[renderAlbumInfo(navigation, rowData, race_id)]} // Passing as an array
               style={styles.row}
               //textStyle={localStyles.text}
               flexArr={[1, 1]} // Adjust column width
@@ -98,7 +96,7 @@ export default function RacePage({ navigation, route }) {
           </ScrollView>
         )
         ) : (
-          <Text>Error Loading Albums</Text>
+          <Text>Failed to load any albums. Make sure your internet connection is stable then close and reopen the app.</Text>
         )}
       </View>
     </SafeAreaView>
@@ -106,11 +104,11 @@ export default function RacePage({ navigation, route }) {
 }
 
 
-const renderAlbumInfo = (navigation, album) => {
+const renderAlbumInfo = (navigation, album, race_id) => {
   const lastModified = new Date(1000 * album.last_modified_ts);
   const localDate = lastModified.toLocaleDateString(); 
   return (
-      <TouchableOpacity onPress={() => navigation.navigate("AlbumPage", { albumData: album })} style={styles.touchable}>
+      <TouchableOpacity onPress={() => navigation.navigate("AlbumPage", { albumData: album, race_id: race_id })} style={styles.touchable}>
           <View style={styles.cellContainer}>
             <View style={styles.textContainer}>
                 <Text style={[styles.rowTextMargin, styles.rowTextBold]}>{album.album_name}</Text>

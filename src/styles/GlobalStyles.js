@@ -68,9 +68,9 @@ export const styles = StyleSheet.create({
     rowTextBold: { fontSize: 20, fontWeight: 'bold', paddingVertical: 5 },
     rowText: { fontSize: 18, paddingVertical: 5 },
     touchable: { flex: 1 },
-    errorText: { margin: 6, fontSize: 20, textAlign:'center' },
+    errorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red' },
     failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
-    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
+    centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row'},
     title1: {
         fontSize: 30, 
         fontWeight: 'bold',

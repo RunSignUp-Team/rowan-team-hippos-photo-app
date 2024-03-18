@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
-import { AuthProvider } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
 
 
@@ -75,8 +74,8 @@ const HomeScreen = ({ navigation }) => {
                                 <Text style={styles.errorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
                             </View>
                         ) : (
-                            <View style={styles.centerAlign}>
-                                <Text style={styles.errorText}>Loading...</Text>
+                            <View style={{paddingTop: 200}}>
+                                <ActivityIndicator size="large" color="#0088ff"/>
                             </View>
                         )
                     ) : (

@@ -9,20 +9,26 @@ import { AntDesign } from "@expo/vector-icons";
 
 
 export default function RacePage({ navigation, route }) {
-    const { albumData } = route.params;
+    const { albumData, race_id } = route.params;
     const name = albumData.album_name;
     const photosNum = albumData.num_photos;
+    const event_days_id = albumData.race_event_days_id;
+    const album_id = albumData.album_id;
 
-    /*const location = getLocation(raceData);
     
-    const race_id = raceData.race_id;
-    const event_days_id = raceData.events[0].race_event_days_id;
-    const [photoAlbumData, setPhotoAlbumData] = useState([]);
-    const [gotPhotoAlbums, setGotPhotoAlbums] = useState(false);
+
+    const [photosData, setPhotosData] = useState([]);
+    const [gotPhotos, setGotPhotos] = useState(false);
     useEffect(() => {
-        fetchAlbumData();
+        fetchPhotosData();
     }, []);
     const { APIKey, APISecret } = useContext(UserContext);
+
+    console.log(album_id);
+    console.log(event_days_id);
+    console.log(APIKey);
+    console.log(APISecret);
+
     useEffect(() => {
       console.log("Current tmpKey value:", APIKey);
       console.log("Current tmpSecret value:", APISecret);
@@ -32,35 +38,33 @@ export default function RacePage({ navigation, route }) {
         console.error(`Error getting race list: ${error}`);
       }
     
-    const fetchAlbumData = async () => {
-        setGotPhotoAlbums(false);
-        let albums = [];
-        let albumError = false;
-        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photo-albums.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey;
+    const fetchPhotosData = async () => {
+        setGotPhotos(false);
+        let photos = [];
+        let photosError = false;
+        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photos.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey + '&page=1&num=100&include_participant_uploads=T&generic_photo_album_id=' + album_id;
         const headers = new Headers();
         headers.append("x-rsu-api-secret", APISecret);
             try {
                 let response = await fetch(url, {method: "GET", headers: headers})
                 let data = await response.json();
-                console.log(data);
-                console.log(race_id);
-                albums = data.albums;
+                photos = data.photos;
             } catch (error) {
                 failureCallback(error);
-                albumError = true;
+                photosError = true;
             }
 
-        if (albumError) {
-          albumError = false;
+        if (photosError) {
+          photosError = false;
             Alert.alert(
                 'Error',
-                'Sorry, the system ran into some trouble and some photo albums failed to load. Please try closing and reopening the app.',
+                'Sorry, the system ran into some trouble and some photos failed to load. Please try closing and reopening the app.',
                 [{ text: 'OK', style: styles.failedFetchingErrorText }]
             );
             }
-        setPhotoAlbumData(albums);
-        setGotPhotoAlbums(true);
-    };*/
+        setPhotosData(photos);
+        setGotPhotos(true);
+    };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -72,6 +76,11 @@ export default function RacePage({ navigation, route }) {
         <View style={styles.paddedContainer}>
           <View style={{paddingBottom: 16}}>
             <Text style={styles.title2}>Photos</Text>
+            <ScrollView>
+            {photosData.map((rowData) => (
+            <Text>{rowData.uploaded_filename}</Text>
+          ))}
+            </ScrollView>
           </View>
 
       </View>
