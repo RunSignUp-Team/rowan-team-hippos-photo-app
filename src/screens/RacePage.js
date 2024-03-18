@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, LogBox } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import FloatingButton from '../components/FloatingButton';
@@ -40,7 +40,6 @@ export default function RacePage({ navigation, route }) {
             try {
                 let response = await fetch(url, {method: "GET", headers: headers})
                 let data = await response.json();
-                console.log(data);
                 albums = data.albums;
             } catch (error) {
                 failureCallback(error);
@@ -60,112 +59,72 @@ export default function RacePage({ navigation, route }) {
     };
 
   return (
-    <View>
-        <View style={styles.container}>
-          <Text style={localStyles.name}>{name}</Text>
-          <Text style={localStyles.info}>{date}</Text>
-          <Text style={localStyles.info}>{location}</Text>
+    <SafeAreaView style={styles.safeArea}>
+        <View style={styles.paddedContainer}>
+          <Text style={styles.title2}>{name}</Text>
+          <Text style={styles.titleInfo}>{date}</Text>
+          <Text style={styles.titleInfo}>{location}</Text>
         </View>
-        <View style={localStyles.linePadding}>
-          <View style={localStyles.line}></View>
-        </View>
+        <View style={styles.line}></View>
+        <View style={styles.paddedContainer}>
+          <View style={{paddingBottom: 16}}>
+            <Text style={styles.title2}>Albums</Text>
+          </View>
         { photoAlbumData ? (
         photoAlbumData.length == 0 ? (
           gotPhotoAlbums == true ? ( 
-            <View style={localStyles.centerAlign}>
-                <Text style={localStyles.noRacesErrorText}>No races found for this user, if you believe this to be an issue with the app, contact help@runsignup.com.</Text>
+            <View style={styles.centerAlign}>
+              <Text style={styles.errorText}>Failed to load any albums. Make sure your internet connection is stable then close and reopen the app.</Text>
             </View>
           ) : (
-            <View style={localStyles.centerAlign}>
-                <Text style={localStyles.noRacesErrorText}>Loading...</Text>
+            <View style={{paddingTop: 200}}>
+              <ActivityIndicator size="large" color="#0088ff"/>
             </View>
         )
         ) : (
-          <View style={localStyles.container}>
           <ScrollView>
           <Table borderStyle={{ borderColor: '#C1C0B9' }}>
           {photoAlbumData.map((rowData, index) => (
             <Row
               key={index}
-              data={[renderAlbumInfo(navigation, rowData)]} // Passing as an array
-              style={localStyles.row}
-              textStyle={localStyles.text}
+              data={[renderAlbumInfo(navigation, rowData, race_id)]} // Passing as an array
+              style={styles.row}
+              //textStyle={localStyles.text}
               flexArr={[1, 1]} // Adjust column width
             />
           ))}
           </Table>
           </ScrollView>
-          </View>
         )
         ) : (
-          <Text>Error Loading Albums</Text>
+          <Text>Failed to load any albums. Make sure your internet connection is stable then close and reopen the app.</Text>
         )}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 
-const renderAlbumInfo = (navigation, album) => {
-  const currentDate = new Date();
+const renderAlbumInfo = (navigation, album, race_id) => {
   const lastModified = new Date(1000 * album.last_modified_ts);
   const localDate = lastModified.toLocaleDateString(); 
   return (
-      <TouchableOpacity onPress={() => navigation.navigate("Test")} style={localStyles.touchable}>
-          <View style={localStyles.cellContainer}>
-            <View style={localStyles.textContainer}>
-                <Text style={[localStyles.text, localStyles.albumName]}>{album.album_name}</Text>
-                <Text style={[localStyles.text, localStyles.numPhotos]}>{album.num_photos} Photos</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("AlbumPage", { albumData: album, race_id: race_id })} style={styles.touchable}>
+          <View style={styles.cellContainer}>
+            <View style={styles.textContainer}>
+                <Text style={[styles.rowTextMargin, styles.rowTextBold]}>{album.album_name}</Text>
+                <Text style={[styles.rowTextMargin, styles.rowText]}>{album.num_photos} Photo{album.num_photos == 1 ? '' : 's'}</Text>
               {album.last_modified_ts &&
-                <Text style={[localStyles.text, localStyles.raceName]}>Last Modified: {localDate}</Text> 
+                <Text style={[styles.rowTextMargin, styles.rowText]}>Last Modified: {localDate}</Text> 
               //: 
                 //<Text style={[localStyles.text, localStyles.raceName]}>Last Modified: N/A</Text>
               }
             </View>  
-            <AntDesign style={[localStyles.text, localStyles.arrow]} name="doubleright" />
+            <AntDesign style={[styles.rowTextMargin, styles.arrow]} name="doubleright" />
           </View>
       </TouchableOpacity>
   );
 };
-
-const localStyles = StyleSheet.create({
-  container: { padding: 16 },
-  row: { 
-    backgroundColor: '#ccc',
-    borderRadius: 10,
-    marginVertical: 3,
-  },  
-  cellContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center',
-  },
-  textContainer: { flex: 1, alignItems: 'left', justifyContent: 'space-between' , paddingLeft: 10, },
-  text: { margin: 6, fontSize: 20 },
-  albumName: { fontSize: 20, fontWeight: 'bold', paddingTop: 0},
-  numPhotos: { fontSize: 20 , paddingRight: 10},
-  touchable: { flex: 1 },
-  noRacesErrorText: { margin: 6, fontSize: 20, textAlign:'center' },
-  failedFetchingErrorText: { margin: 6, fontSize: 20, textAlign:'center', color:'red'},
-  centerAlign: {alignItems: 'center', justifyContent: 'center', flexDirection:'row', flex: 1},
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    paddingBottom: 2,
-  },
-  info: {
-    fontSize: 18,
-  },
-  line: {
-    height: 5,
-    backgroundColor: '#ddd',
-  },
-  linePadding: {
-    paddingVertical: 20
-  },
-  arrow: {
-    fontSize: 30, 
-    fontWeight: 'bold',
-},
-});
 
 const getLocation = (raceData) => {
   return (raceData.address.street + ", " + raceData.address.city + ", " + raceData.address.state + " " + raceData.address.zipcode);

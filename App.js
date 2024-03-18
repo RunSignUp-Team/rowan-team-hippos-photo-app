@@ -4,7 +4,8 @@ import Header from './src/navigation/Header';
 import Test from './src/components/Test';
 import HomeScreen from './src/screens/homePage';
 import RacePage from './src/screens/RacePage';
-import { NavigationContainer, useRoute } from '@react-navigation/native';
+import AlbumPage from './src/screens/AlbumPage';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/components/AuthContext';
 import LoginScreen from './src/screens/LoginScreen';
@@ -29,7 +30,8 @@ export function MyStackNavigator() {
       <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" showHamburgerMenu={true}/>}}/>
-      <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Albums" />}}/>
+      <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Test" />}}/>
+      <Stack.Screen name="AlbumPage" component={AlbumPage} options={{ header: () => <Header title="Album Page" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
     
