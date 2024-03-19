@@ -190,7 +190,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
           const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}`, {
             method: 'POST',
             headers: {
-                'x-rsu-api-secret': API_SECRET,
+                'x-rsu-api-secret': X_RSU_API_SECRET,
             },
             body: formData,
           });
