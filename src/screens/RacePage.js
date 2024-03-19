@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import FloatingButton from '../components/FloatingButton';
@@ -10,6 +10,12 @@ import { AntDesign } from "@expo/vector-icons";
 
 
 export default function RacePage({ navigation, route }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    console.log("toggleMenu called in HomeScreen", !isMenuOpen);
+    setIsMenuOpen(!isMenuOpen);
+  };
     const { raceData, date } = route.params;
     const location = getLocation(raceData);
     const name = raceData.name;
@@ -100,6 +106,25 @@ export default function RacePage({ navigation, route }) {
           <Text>Failed to load any albums. Make sure your internet connection is stable then close and reopen the app.</Text>
         )}
       </View>
+      {isMenuOpen && (
+        <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
+          <View style={styles.fullScreen}>
+            {// if isMenuOpen is ture, then the overlay will be visible
+              isMenuOpen && (
+                <View style={[styles.overlay, StyleSheet.absoluteFillObject]} />
+
+              )}
+          </View>
+        </TouchableWithoutFeedback>
+      )}
+      <View style={{position: "absolute", bottom:0, left:0, right:0}}>
+      
+        {// to display the floating button and also to pass the toggleMenu function to the floating 
+          //button
+        }
+        <FloatingButton isOpenProp={isMenuOpen} onToggleRequest={toggleMenu} />
+      </View>
+
     </SafeAreaView>
   );
 }
