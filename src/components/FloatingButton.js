@@ -12,7 +12,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const FloatingButton = ({isOpenProp, onToggleRequest, raceId}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID}) => {
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
     const liveStreamValue = useSharedValue(30);
@@ -177,14 +177,13 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId}) => {
 
         const apiUrl = 'https://test3.runsignup.com/Rest/v2/photos/create-race-photo-album.json';
         const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
-        const API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
-        const RACE_EVENT_DAYS_ID = "34168";
+        const X_RSU_API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
         
         let formData = new FormData();
         formData.append('race_id', raceId);
         formData.append('race_event_days_id', RACE_EVENT_DAYS_ID); //hardcoded values for most of these ; has to be changed
         formData.append('rsu_api_key', API_KEY);
-        formData.append('X-RSU-API-SECRET', API_SECRET);
+        formData.append('X-RSU-API-SECRET', X_RSU_API_SECRET);
         formData.append('album_name', albumName);
       
         try {
