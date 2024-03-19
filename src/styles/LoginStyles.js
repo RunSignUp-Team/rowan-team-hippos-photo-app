@@ -27,11 +27,11 @@ export const styles = StyleSheet.create({
       borderRadius: 25,
     },
     login_text: {
-      fontSize: 16,
+      fontSize: 20,
       lineHeight: 21,
       fontWeight: 'bold',
       letterSpacing: 0.25,
-      color: 'black',
+      color: 'white',
     },
     login_title_container: {
         flex: 1,

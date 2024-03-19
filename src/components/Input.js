@@ -74,7 +74,7 @@ return (
         onChangeText={handlePasswordChange}
         value={password}
       />
-      <Pressable style={({ pressed }) => [styles.login_button,{backgroundColor: pressed ? 'rgb(175,16,93)' : 'rgb(239,79,157)'}]} onPress={() => loginUser(username, password)}>
+      <Pressable style={({ pressed }) => [styles.login_button,{backgroundColor: pressed ? 'rgb(175,16,93)' : 'rgb(226,76,154)'}]} onPress={() => loginUser(username, password)}>
         <Text style={styles.login_text}>Submit</Text>
       </Pressable>
       {hasPressed && errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>} 
