@@ -1,5 +1,5 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import React, {useEffect} from 'react';
+import { Image, Pressable, StyleSheet, View, Modal, TextInput, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Animated, {
     Easing,
     Extrapolation,
@@ -12,7 +12,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const FloatingButton = ({isOpenProp, onToggleRequest}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, raceId}) => {
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
     const liveStreamValue = useSharedValue(30);
@@ -24,6 +24,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
     const progress = useDerivedValue(() =>
         isOpen.value ? withTiming(1) : withTiming(0),
     );
+    const [modalVisible, setModalVisible] = useState(false);
+    const [albumName, setAlbumName] = useState('');
 
     const animateButton = (shouldOpen) => {
         const config = { easing: Easing.bezier(0.68, -0.6, 0.32, 1.6), duration: 500 };
@@ -170,6 +172,44 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
         };
     });
 
+    const createAlbum = async () => {
+        console.log("createAlbum function called");
+
+        const apiUrl = 'https://test3.runsignup.com/Rest/v2/photos/create-race-photo-album.json';
+        const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
+        const API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
+        const RACE_EVENT_DAYS_ID = "34168";
+        
+        let formData = new FormData();
+        formData.append('race_id', raceId);
+        formData.append('race_event_days_id', RACE_EVENT_DAYS_ID); //hardcoded values for most of these ; has to be changed
+        formData.append('rsu_api_key', API_KEY);
+        formData.append('X-RSU-API-SECRET', API_SECRET);
+        formData.append('album_name', albumName);
+      
+        try {
+          const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'x-rsu-api-secret': API_SECRET,
+            },
+            body: formData,
+          });
+      
+          if (!response.ok) {
+            throw new Error('API call failed with status ' + response.status);
+          }
+      
+          const data = await response.json();
+          console.log("Album created successfully:", data);
+          setModalVisible(false);
+          // successful response
+        } catch (error) {
+          console.error("Error creating album:", error);
+          // error code
+        }
+      };
+
     return (
         <View style>
             <Pressable onPress={() => {
@@ -206,7 +246,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
             </Pressable>
 
             <Pressable onPress={() => {
-                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
+                setModalVisible(true); //make create album modal visible ; modal has its own onPress in return statement
             
             }}>
             <Animated.View
@@ -234,6 +274,31 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
                     />
                 </Animated.View>
             </Pressable>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="Album Name"
+                            value={albumName}
+                            onChangeText={setAlbumName}
+                        />
+                        <Button
+                            title="Create"
+                            onPress={() => {
+                                createAlbum();
+                                setModalVisible(!modalVisible);
+                            }}
+                        />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -267,5 +332,33 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 18,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    textInput: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        width: 200,
     },
 });

@@ -5,12 +5,11 @@ const CreateAlbum = ({ raceId }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [albumName, setAlbumName] = useState('');
 
-    const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
-    const API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
-    const RACE_EVENT_DAYS_ID = "34168";
-
     const createAlbum = async () => {
         const apiUrl = 'https://test3.runsignup.com/Rest/v2/photos/create-race-photo-album.json';
+        const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
+        const API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
+        const RACE_EVENT_DAYS_ID = "34168";
         
         let formData = new FormData();
         formData.append('race_id', raceId);
@@ -23,7 +22,7 @@ const CreateAlbum = ({ raceId }) => {
           const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}`, {
             method: 'POST',
             headers: {
-                'x-rsu-api-secret': API_SECRET, // Assuming your API requires a secret header
+                'x-rsu-api-secret': API_SECRET,
             },
             body: formData,
           });
