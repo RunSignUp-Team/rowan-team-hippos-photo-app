@@ -179,7 +179,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
 
         if (!albumName.trim()) {
             setErrorMessage("Please enter a name for the album.");
-            return; // Stop the function if album name is empty
+            return;
         }
 
         console.log("createAlbum function called");
@@ -190,13 +190,13 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
         
         let formData = new FormData();
         formData.append('race_id', raceId);
-        formData.append('race_event_days_id', RACE_EVENT_DAYS_ID); //hardcoded values for most of these ; has to be changed
+        formData.append('race_event_days_id', RACE_EVENT_DAYS_ID);
         formData.append('rsu_api_key', API_KEY);
         formData.append('X-RSU-API-SECRET', X_RSU_API_SECRET);
         formData.append('album_name', albumName);
       
         try {
-          const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}`, {
+          const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}&race_id=${raceId}`, {
             method: 'POST',
             headers: {
                 'x-rsu-api-secret': X_RSU_API_SECRET,
@@ -216,7 +216,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
           // successful response
         } catch (error) {
           console.error("Error creating album:", error);
-          // setErrorMessage("Failed to create album. Please try again."); // Update error message to reflect the failure
+          setErrorMessage("Failed to create album. Please try again."); // Update error message to reflect the failure
           // error code
         }
       };

@@ -27,15 +27,15 @@ const ConditionalFloatingButton = () => {
 export function MyStackNavigator() {
   
   return (
-      <Stack.Navigator initialRouteName='Login'>
+    <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Home" component={HomeScreen} options={{ header: () => <Header title="Home" showHamburgerMenu={true}/>}}/>
       <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Test" />}}/>
       <Stack.Screen name="AlbumPage" component={AlbumPage} options={{ header: () => <Header title="Album Page" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
     </Stack.Navigator>
-    
   );
+  
 }
 
 export default function App() {
