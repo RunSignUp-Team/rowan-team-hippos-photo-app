@@ -12,8 +12,9 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
+import ModalPopup from './Modal';
 
-const FloatingButton = ({isOpenProp, onToggleRequest}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
     const navigation = useNavigation();
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
@@ -190,7 +191,10 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
                 </Animated.Text>
             </Animated.View>
             </Pressable>
-            <Pressable onPress={() => navigation.navigate('imagePicker')}>
+            <Pressable onPress={() => {
+                onNewAlbumRequest();
+                handlePress();
+            }}>
             <Animated.View
                 style={[styles.contentContainer, uploadPicture, uploadPictureStyle]}>
                 <View style={styles.iconContainer}>
@@ -205,10 +209,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
             </Animated.View>
             </Pressable>
 
-            <Pressable onPress={() => {
-                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
-            
-            }}>
+            <Pressable onPress={() =>{
+                handlePress();}}>
             <Animated.View
                 style={[styles.contentContainer, createFolder, newAlbumStyle]}>
                 <View style={styles.iconContainer}>
