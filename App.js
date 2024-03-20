@@ -14,7 +14,6 @@ import { DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from './src/components/AuthContext';
 import FloatingButton from './src/components/FloatingButton';
-import Imagepicker from './src/components/imagePicker';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,7 +33,7 @@ export function MyStackNavigator() {
       <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Test" />}}/>
       <Stack.Screen name="AlbumPage" component={AlbumPage} options={{ header: () => <Header title="Album Page" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
-      <Stack.Screen name="imagePicker" component={Imagepicker} />
+
     </Stack.Navigator>
     
   );
