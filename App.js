@@ -48,7 +48,7 @@ export default function App() {
           initialRouteName="Home"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title:'Home', headerShown: false }} />
+          <Drawer.Screen name="Main" component={MyStackNavigator} options={{ title:'Home', headerShown: false}} />
         </Drawer.Navigator>
       </NavigationContainer>
     </SafeAreaView>
@@ -57,30 +57,42 @@ export default function App() {
 
 }
 const CustomDrawerContent = (props) => {
-
   const { usersName } = useContext(UserContext);
-
   const navigation = useNavigation();
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
-          <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
-          <DrawerItemList {...props}/>
-          <DrawerItem
-            label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
-            onPress={() => { navigation.navigate('Login') }}   // when pressed, it moves users to the Login Screen
-            style={{ backgroundColor: 'red' }} // Customize the background color
-            labelStyle={{ color: 'white' }}    // Customize the label color
-          />
-        </ScrollView>
-      </SafeAreaView>
-    );
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
+        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10, color: 'black', fontWeight: 'bold'}}>{usersName}</Text>
+        <DrawerItem
+          label="Home"
+          onPress={() => navigation.navigate('Home')} 
+          labelStyle={{ color: 'black'}}
+          style={{
+            backgroundColor: 'lightgrey',
+            marginHorizontal: 10,
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'grey',
+            marginBottom: 10,
+          }}
+        />
+        <DrawerItem
+          label="Sign Out"
+          onPress={() => navigation.navigate('Login')}
+          style={{ borderColor: 'black', backgroundColor: 'grey' }}
+          labelStyle={{ color: 'white' }}
+        />
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#ef4f9d',
+      color: 'white',
     },
     content: {
       flex: 1,

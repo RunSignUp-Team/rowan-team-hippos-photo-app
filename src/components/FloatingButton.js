@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, View, Modal, TextInput, Button } from 'react-native';
+import { Image, Pressable, StyleSheet, View, Modal, TextInput, Button, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Animated, {
     Easing,
@@ -26,6 +26,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
     );
     const [modalVisible, setModalVisible] = useState(false);
     const [albumName, setAlbumName] = useState('');
+    const [hasPressed, setHasPressed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(''); 
 
     const animateButton = (shouldOpen) => {
         const config = { easing: Easing.bezier(0.68, -0.6, 0.32, 1.6), duration: 500 };
@@ -173,6 +175,13 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
     });
 
     const createAlbum = async () => {
+        setHasPressed(true);
+
+        if (!albumName.trim()) {
+            setErrorMessage("Please enter a name for the album.");
+            return; // Stop the function if album name is empty
+        }
+
         console.log("createAlbum function called");
 
         const apiUrl = 'https://test3.runsignup.com/Rest/v2/photos/create-race-photo-album.json';
@@ -201,10 +210,13 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
       
           const data = await response.json();
           console.log("Album created successfully:", data);
+          setAlbumName('');
+          setErrorMessage('');
           setModalVisible(false);
           // successful response
         } catch (error) {
           console.error("Error creating album:", error);
+          // setErrorMessage("Failed to create album. Please try again."); // Update error message to reflect the failure
           // error code
         }
       };
@@ -290,11 +302,9 @@ const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID
                         />
                         <Button
                             title="Create"
-                            onPress={() => {
-                                createAlbum();
-                                setModalVisible(!modalVisible);
-                            }}
+                            onPress={createAlbum}
                         />
+                    {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>}
                     </View>
                 </View>
             </Modal>
