@@ -109,5 +109,32 @@ export const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
+    modalHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding: 20,
+        textAlign: 'center',
+    },
+    albumOption: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#cccccc',
+        backgroundColor: '#f0f0f0', // Light grey background for each album option
+        marginHorizontal: 20, // Add some horizontal margin
+        marginTop: 10, // Space out each album option vertically
+        borderRadius: 5, // Rounded corners for the album options
+    },
+    albumOptionText: {
+        fontSize: 16,
+    },
+    albumDetailText: {
+        fontSize: 14,
+        color: '#666', // Example color for detail text
+        // Add any additional styling you need for detail text
+    },
+    albumListContainer: {
+        // Ensure this container limits the height of the album list for scrolling
+        maxHeight: 300, // Adjust this value based on your needs
+    },
 });
