@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
+import { View, Text,FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import FloatingButton from '../components/FloatingButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
+import ModalPopup from '../components/Modal';
+import { openImagePickerAsync } from '../components/imagePicker';
 
 
 
 export default function RacePage({ navigation, route }) {
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [isProcessingImages, setIsProcessingImages] = useState(false);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -67,6 +78,55 @@ export default function RacePage({ navigation, route }) {
   return (
     <SafeAreaView style={styles.safeArea}>
         <View style={styles.paddedContainer}>
+        <ModalPopup visible={isModalVisible} onClose={toggleModal}>
+          <Text style={styles.modalHeader}>Add to Album</Text>
+
+    {/* Create New Album Option */}
+    <TouchableOpacity
+      onPress={() => {
+        console.log("Create New Album");
+        toggleModal(); //For now closes the modal
+      }}
+      style={styles.albumOption}
+    >
+      <Text style={styles.albumOptionText}>Create New Album</Text>
+    </TouchableOpacity>
+
+    {/* Scrollable Album List */}
+    <View style={styles.albumListContainer}>
+      <FlatList
+        data={photoAlbumData}
+        keyExtractor={item => item.album_id.toString()}
+        renderItem={({ item }) => {
+          const lastModified = new Date(item.last_modified_ts * 1000); 
+          const formattedDate = lastModified.toLocaleDateString(); 
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                console.log("Selected album:", item.album_name);
+                 
+
+                // Use the imported function to open the image picker
+                openImagePickerAsync((uris) => {
+                  toggleModal();
+                  console.log('Selected image URI:', uris);
+                  setSelectedImages(uris);
+                  // To handle the upload process based on the selected album
+                  // Use item.album_id along with uri to upload
+                });
+            }}
+              style={styles.albumOption}
+            >
+              <Text style={styles.albumOptionText}>{item.album_name}</Text>
+              <Text style={styles.albumDetailText}>{item.num_photos} Photos</Text>
+              <Text style={styles.albumDetailText}>Last Modified: {formattedDate}</Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
+          </View>
+        </ModalPopup>
+
           <Text style={styles.title2}>{name}</Text>
           <Text style={styles.titleInfo}>{date}</Text>
           <Text style={styles.titleInfo}>{location}</Text>
@@ -122,7 +182,7 @@ export default function RacePage({ navigation, route }) {
         {// to display the floating button and also to pass the toggleMenu function to the floating 
           //button
         }
-        <FloatingButton isOpenProp={isMenuOpen} onToggleRequest={toggleMenu} />
+        <FloatingButton isOpenProp={isMenuOpen} onToggleRequest={toggleMenu} onNewAlbumRequest={toggleModal} />
       </View>
 
     </SafeAreaView>
