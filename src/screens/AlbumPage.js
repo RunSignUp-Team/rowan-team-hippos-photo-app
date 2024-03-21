@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableWithoutFeedback, Alert, Image, Dimensions, Modal, Pressable } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Alert, Image, Dimensions, Modal, Pressable, FlatList } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
-import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 
 
@@ -29,9 +29,12 @@ export default function RacePage({ navigation, route }) {
 
     const [photosData, setPhotosData] = useState([]);
     const [gotPhotos, setGotPhotos] = useState(false);
+    const [pageNumber, setPageNumber] = useState(1);
+    const photosPerPage = 20;
+
     useEffect(() => {
         fetchPhotosData();
-    }, []);
+    }, [pageNumber]);
     const { APIKey, APISecret } = useContext(UserContext);
 
     console.log(album_id);
@@ -52,7 +55,7 @@ export default function RacePage({ navigation, route }) {
         setGotPhotos(false);
         let photos = [];
         let photosError = false;
-        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photos.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey + '&page=1&num=1000&include_participant_uploads=T&generic_photo_album_id=' + album_id;
+        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photos.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey + '&page=' + pageNumber + '&num=' + photosPerPage + '&include_participant_uploads=T&generic_photo_album_id=' + album_id;
         const headers = new Headers();
         headers.append("x-rsu-api-secret", APISecret);
             try {
@@ -77,8 +80,64 @@ export default function RacePage({ navigation, route }) {
         setGotPhotos(true);
     };
 
-    const [modalVisible, setModalVisible] = useState(false);
+    console.log(photosData[0]);
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [imageURL, setImageURL] = useState();
+    const [imageSize, setImageSize] = useState();
+
+    let buttonData;
+    let pagesTotal = Math.floor(photosNum / photosPerPage) + 1;
+    if (Math.floor(photosNum / photosPerPage) + 1 > 7) {
+      buttonData = Array.from({ length: 7 });
+      buttonData[0] = 1;
+      buttonData[6] = pagesTotal;
+      if (pageNumber <= 4) {
+        buttonData[1] = 2;
+        buttonData[2] = 3;
+        buttonData[3] = 4;
+        buttonData[4] = 5;
+        buttonData[5] = "...";
+      }
+      else if (pageNumber >= pagesTotal - 3) {
+        buttonData[1] = "...";
+        buttonData[2] = pagesTotal - 4;
+        buttonData[3] = pagesTotal - 3;
+        buttonData[4] = pagesTotal - 2;
+        buttonData[5] = pagesTotal - 1;
+      }
+      else {
+        buttonData[1] = "...";
+        buttonData[2] = pageNumber - 1;
+        buttonData[3] = pageNumber;
+        buttonData[4] = pageNumber + 1;
+        buttonData[5] = "...";
+      }
+    }
+    else {
+      buttonData = Array.from({ length: Math.floor(photosNum / photosPerPage) + 1 }, (_, index) => index + 1);
+    }
+    
+    const renderItem = ({ item }) => {
+      if (typeof item === 'number') {
+        return (
+          <View style={{minWidth: 35}}>
+            <TouchableOpacity onPress={() => setPageNumber(item)} style={[localStyles.pageButton, item === pageNumber && { backgroundColor: '#aabbff'}]}>
+              <Text style={{fontSize:16}}>{item}</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      } else {
+        return (
+          <View style={{minWidth: 35}}>
+            <View style={localStyles.pageButton}>
+              <Text style={{fontSize:12}}>{item}</Text>
+            </View>
+          </View>
+        );
+      }
+      
+    };
 
     return (
     <SafeAreaView style={{flex: 1}}>
@@ -93,27 +152,43 @@ export default function RacePage({ navigation, route }) {
           </View>
       </View>
       <ScrollView style={{paddingBottom: 100}}>
-        <Photos photosData={photosData} setModalVisible={setModalVisible}></Photos>
+        <Photos photosData={photosData} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Photos>
       </ScrollView>
-      <View styl>
-
+      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <TouchableOpacity onPress={() => setPageNumber(pageNumber - 1 >= 1 ? pageNumber - 1 : pageNumber)} style={{paddingVertical: 10}}>
+          <Text style={{fontSize: 16, color: pageNumber === 1 ? '#ccccff' : "#0000ff", marginHorizontal: 7 }}>{"< Previous"}</Text>
+        </TouchableOpacity>
+        <View style={{flexDirection: 'column'}}>
+          <FlatList
+            horizontal
+            data={buttonData}
+            renderItem={renderItem}
+            //keyExtractor={(item) => item.toString()}
+          />
+        </View>
+        <TouchableOpacity onPress={() => setPageNumber(pageNumber + 1 <= pagesTotal ? pageNumber + 1 : pageNumber)} style={{paddingVertical: 10}}>
+          <Text style={{fontSize: 16, color: pageNumber === pagesTotal ? '#ccccff' : "#0000ff", marginHorizontal: 7 }}>{"Next >"}</Text>
+        </TouchableOpacity>
       </View>
 
       <Modal
         //animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={localStyles.centeredView}>
-          <View style={localStyles.modalView}>
-            <Text style={localStyles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[localStyles.button, localStyles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={localStyles.textStyle}>Hide Modal</Text>
-            </Pressable>
+        onRequestClose={() => {setModalVisible(false)}}>
+        <View style={localStyles.overlay}>
+          <View style={localStyles.centeredView}>
+            <View style={localStyles.modalView}>
+              <Pressable
+                style={[localStyles.button]}
+                onPress={() => setModalVisible(false)}>
+                <Feather style={localStyles.textStyle} name="x" />
+              </Pressable>
+              <Image
+                style={{ ...imageSize }}
+                source={{ uri: imageURL }}
+              />
+            </View>
           </View>
         </View>
       </Modal>
@@ -122,7 +197,7 @@ export default function RacePage({ navigation, route }) {
   );
 }
 
-function Photos({ photosData, setModalVisible }) {
+function Photos({ photosData, setModalVisible, setImageSize, setImageURL }) {
     let leftColumn = [];
     let rightColumn = [];
     let leftHeight = 0;
@@ -148,24 +223,40 @@ function Photos({ photosData, setModalVisible }) {
       flexDirection: 'row',
       justifyContent: 'center', // Horizontally center the columns
       }}>
-      <Column column={leftColumn} setModalVisible={setModalVisible}></Column>
-      <Column column={rightColumn} setModalVisible={setModalVisible}></Column>
+      <Column column={leftColumn} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Column>
+      <Column column={rightColumn} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Column>
   </View>
   );
 }
 
-function Column({ column, setModalVisible }) {
+function Column({ column, setModalVisible, setImageSize, setImageURL }) {
 
 return (
   <View style={{ paddingHorizontal: 20}}>
       {column.map((rowData, id) => {
         const imageSize = {
           width: Dimensions.get('window').width * .4,
-          height: rowData.thumbnail.height / 4 * Dimensions.get('window').width * .4 / (rowData.thumbnail.width / 4)
+          height: rowData.thumbnail.height * Dimensions.get('window').width * .4 / rowData.thumbnail.width
         };
         return (
           <View key={id} style={{ marginBottom: 10}}>
-            <TouchableWithoutFeedback onPress={() => setModalVisible(true)} style={styles.touchable}>
+            <TouchableWithoutFeedback onPress={() => {
+              setModalVisible(true);
+              setImageURL(rowData.large.image_url);
+              if (rowData.large.height / Dimensions.get('window').height > rowData.large.width / Dimensions.get('window').width) {
+                setImageSize({
+                  width: rowData.thumbnail.width * Dimensions.get('window').height * 0.8 / rowData.thumbnail.height,
+                  height: Dimensions.get('window').height * 0.8
+                });
+              }
+              else {
+                setImageSize({
+                  width: Dimensions.get('window').width * 0.9,
+                  height: rowData.thumbnail.height * Dimensions.get('window').width * 0.9 / rowData.thumbnail.width
+                });
+              }
+              
+            }} style={styles.touchable}>
               <Image
                 style={{ ...imageSize, marginBottom: 10 }}
                 source={{ uri: rowData.thumbnail.image_url }}
@@ -189,7 +280,9 @@ const localStyles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    paddingHorizontal: 15,
+    paddingBottom: 35,
+    paddingTop: 45,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -201,24 +294,33 @@ const localStyles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    position: 'absolute',
+    top: 0,
     padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
+    right: 5,
+    zIndex: 1
   },
   textStyle: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 30,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  pageButton: {
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    marginVertical: 5,
+    marginHorizontal: 3, 
+    borderRadius: 5,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: -1
   },
 });
 
