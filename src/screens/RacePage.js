@@ -19,11 +19,6 @@ export default function RacePage({ navigation, route }) {
   const [isModalVisible, setModalVisible] = useState(false);
   
 
-  // This gets called once image processing is done
-  const showGalleryModal = () => {
-    console.log("showGalleryModal called");
-    setIsGalleryModalVisible(true);
-  };
 
 
   const toggleModal = () => {
@@ -109,7 +104,7 @@ export default function RacePage({ navigation, route }) {
         <View style={styles.paddedContainer}>
         <ModalPopup visible={isModalVisible} onClose={()=> {
           toggleModal();
-          setModalContent('albumList');}}>
+          setTimeout(() => setModalContent('albumList'), 300);}}>
           {modalContent === 'albumList' && (
             <>
               <Text style={styles.modalHeader}>Add to Album</Text>
@@ -142,7 +137,7 @@ export default function RacePage({ navigation, route }) {
             <FlatList
               data={selectedImages}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectImage(item)}>
+                <TouchableOpacity onPress={() => Alert.alert("Cropping functionality not avaialble yet.")}>
                   <Image source={{ uri: item }} style={styles.thumbnailStyle} />
                 </TouchableOpacity>
               )}
@@ -153,7 +148,7 @@ export default function RacePage({ navigation, route }) {
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.cropButton}
-                  onPress={() => console.log('Crop Images Pressed')}>
+                  onPress={() => Alert.alert("Upload functionality needs to be implemented yet.")}>
                   <Text style={styles.cropButtonText}>Upload</Text>
                 </TouchableOpacity>
               </View>
