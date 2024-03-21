@@ -3,6 +3,7 @@ import { StyleSheet, StatusBar } from 'react-native';
 export const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
+        flexShrink: 100,
         //backgroundColor: 'rgba(200, 200, 52, 0)', // Pink background for the entire safe area
     },
     header: {
@@ -110,6 +111,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+
     modalHeader: {
         fontSize: 20,
         fontWeight: 'bold',
