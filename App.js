@@ -33,6 +33,7 @@ export function MyStackNavigator() {
       <Stack.Screen name="Test" component={Test} options={{ header: () => <Header title="Test" />}}/>
       <Stack.Screen name="AlbumPage" component={AlbumPage} options={{ header: () => <Header title="Album Page" />}}/>
       <Stack.Screen style={styles.paddingPage} name="RacePage" component={RacePage} options={{ header: () => <Header title="Race Page" />}}/>
+
     </Stack.Navigator>
     
   );

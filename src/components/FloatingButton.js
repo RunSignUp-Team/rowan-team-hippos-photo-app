@@ -11,8 +11,11 @@ import Animated, {
     withSpring,
     withTiming,
 } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
+import ModalPopup from './Modal';
 
-const FloatingButton = ({isOpenProp, onToggleRequest}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
+    const navigation = useNavigation();
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
     const liveStreamValue = useSharedValue(30);
@@ -65,7 +68,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
         onToggleRequest();
         const config = {
             easing: Easing.bezier(0.68, -0.6, 0.32, 1.6),
-            duration: 500,
+            duration: 100,
         };
         //if isOpen is true, which means the menu will be closed on clicking the plus icon
         if (isOpen.value) {
@@ -91,10 +94,10 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
             albumValue.value = withDelay(200, withSpring(130));
             uploadPictureValue.value = withDelay(100, withSpring(210));
             liveStreamValue.value = withSpring(290);
-            albumWidth.value = withDelay(1200, withSpring(200));
-            uploadPictureWidth.value = withDelay(1100, withSpring(200));
-            liveStreamWidth.value = withDelay(1000, withSpring(200));
-            opacity.value = withDelay(1200, withSpring(1));
+            albumWidth.value = withDelay(250, withSpring(200));
+            uploadPictureWidth.value = withDelay(200, withSpring(200));
+            liveStreamWidth.value = withDelay(150, withSpring(200));
+            opacity.value = withDelay(350, withSpring(1));
         }
         isOpen.value = !isOpen.value;
     };
@@ -189,7 +192,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
             </Animated.View>
             </Pressable>
             <Pressable onPress={() => {
-                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
+                onNewAlbumRequest();
+                handlePress();
             }}>
             <Animated.View
                 style={[styles.contentContainer, uploadPicture, uploadPictureStyle]}>
@@ -205,10 +209,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
             </Animated.View>
             </Pressable>
 
-            <Pressable onPress={() => {
-                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
-            
-            }}>
+            <Pressable onPress={() =>{
+                handlePress();}}>
             <Animated.View
                 style={[styles.contentContainer, createFolder, newAlbumStyle]}>
                 <View style={styles.iconContainer}>

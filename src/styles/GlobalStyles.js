@@ -111,8 +111,65 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    tinyPhoto: {
+
+    modalHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding: 20,
+        textAlign: 'center',
+    },
+    albumOption: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#cccccc',
+        backgroundColor: '#f0f0f0', // Light grey background for each album option
+        marginHorizontal: 20, // Add some horizontal margin
+        marginTop: 10, // Space out each album option vertically
+        borderRadius: 5, // Rounded corners for the album options
+    },
+    albumOptionText: {
+        fontSize: 16,
+    },
+    albumDetailText: {
+        fontSize: 14,
+        color: '#666', 
+    },
+    albumListContainer: {
+        maxHeight: 300, 
+    },
+    galleryContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        padding: 10,
+        backgroundColor: '#f0f0f0', // Light grey background for the gallery
+    },
+    thumbnailStyle: {
         width: 100,
         height: 100,
+        margin: 5,
+        borderRadius: 5, 
+    },
+    galleryContentContainer: {
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',   
+        padding: 10,
+        position: 'absolute',
+        bottom: 30,
+        right: 30,
+         
+    },
+    cropButton: {
+        backgroundColor: '#007bff', 
+        padding: 10,
+        borderRadius: 5,
+        
+    },
+    cropButtonText: {
+        color: '#ffffff', 
+        fontWeight: 'bold',
     },
 });
