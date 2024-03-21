@@ -3,6 +3,7 @@ import { StyleSheet, StatusBar } from 'react-native';
 export const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
+        flexShrink: 100,
         //backgroundColor: 'rgba(200, 200, 52, 0)', // Pink background for the entire safe area
     },
     header: {
@@ -109,5 +110,9 @@ export const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
+    tinyPhoto: {
+        width: 100,
+        height: 100,
+    },
 });
