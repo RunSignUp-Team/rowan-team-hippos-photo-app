@@ -137,4 +137,20 @@ export const styles = StyleSheet.create({
         // Ensure this container limits the height of the album list for scrolling
         maxHeight: 300, // Adjust this value based on your needs
     },
+    galleryContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        padding: 10,
+        backgroundColor: 'red', // Light grey background for the gallery
+    },
+    thumbnailStyle: {
+        width: 100,
+        height: 100,
+        margin: 5,
+        borderRadius: 5, // For rounded corners
+    },
+    galleryContentContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });
