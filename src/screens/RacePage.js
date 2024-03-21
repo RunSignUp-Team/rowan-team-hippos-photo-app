@@ -83,7 +83,9 @@ export default function RacePage({ navigation, route }) {
       const uris = await openImagePickerAsync();
       console.log("Selected URIs:", uris);
       setSelectedImages(uris);
-      setModalContent('imageGallery');
+      if(uris.length > 0) {
+        setModalContent('imageGallery');
+      }
     };
   const initiateCropping = async (imageUri) => {
     try {
