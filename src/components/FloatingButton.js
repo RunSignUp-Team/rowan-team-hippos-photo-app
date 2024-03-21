@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 
-const FloatingButton = ({isOpenProp, onToggleRequest}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, raceId, RACE_EVENT_DAYS_ID}) => {
     const navigation = useNavigation();
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
@@ -294,6 +294,15 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
+                        {/* 'X' Close Button */}
+                        <Pressable
+                            style={[styles.closeButton, { position: 'absolute', top: 10, right: 10 }]}
+                            onPress={() => setModalVisible(false)}
+                        >
+                            <Text style={{ color: 'black', fontWeight: 'bold' }}>X</Text>
+                        </Pressable>
+
+                        {/* Existing Modal Content */}
                         <TextInput
                             style={styles.textInput}
                             placeholder="Album Name"
@@ -304,7 +313,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest}) => {
                             title="Create"
                             onPress={createAlbum}
                         />
-                    {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>}
+                        {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
                     </View>
                 </View>
             </Modal>
@@ -369,5 +378,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         width: 200,
+    },
+    closeButton: {
+        backgroundColor: '#ddd', 
+        width: 25, 
+        height: 25, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        borderRadius: 12.5,
+        opacity: 0.8,
     },
 });
