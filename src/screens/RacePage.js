@@ -218,7 +218,7 @@ export default function RacePage({ navigation, route }) {
         {// to display the floating button and also to pass the toggleMenu function to the floating 
           //button
         }
-        <FloatingButton isOpenProp={isMenuOpen} onToggleRequest={toggleMenu} onNewAlbumRequest={toggleModal} />
+        <FloatingButton isOpenProp={isMenuOpen} onToggleRequest={toggleMenu} onNewAlbumRequest={toggleModal} raceId={race_id} RACE_EVENT_DAYS_ID={event_days_id}/>
       </View>
 
     </SafeAreaView>

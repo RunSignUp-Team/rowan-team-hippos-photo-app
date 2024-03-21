@@ -1,5 +1,5 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import React, {useEffect} from 'react';
+import { Image, Pressable, StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Animated, {
     Easing,
     Extrapolation,
@@ -14,7 +14,7 @@ import Animated, {
 import { useNavigation } from '@react-navigation/native';
 import ModalPopup from './Modal';
 
-const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
+const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId, RACE_EVENT_DAYS_ID}) => {
     const navigation = useNavigation();
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
@@ -27,6 +27,16 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
     const progress = useDerivedValue(() =>
         isOpen.value ? withTiming(1) : withTiming(0),
     );
+    const [modalVisible, setModalVisible] = useState(false);
+    const [albumName, setAlbumName] = useState('');
+    const [hasPressed, setHasPressed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(''); 
+
+    // When you want to close the modal, passed to ModalPopup as onClose prop
+    const onCloseModal = () => {
+        setModalVisible(false);
+        setErrorMessage('');
+    };
 
     const animateButton = (shouldOpen) => {
         const config = { easing: Easing.bezier(0.68, -0.6, 0.32, 1.6), duration: 500 };
@@ -173,7 +183,54 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
         };
     });
 
-    return (
+    const createAlbum = async () => {
+        setHasPressed(true);
+
+        if (!albumName.trim()) {
+            setErrorMessage("Please enter a name for the album.");
+            return;
+        }
+
+        console.log("createAlbum function called");
+
+        const apiUrl = 'https://test3.runsignup.com/Rest/v2/photos/create-race-photo-album.json';
+        const API_KEY = "UOIPvgKli3B83uzfSuzVgYfRgk3Lzy9M";
+        const X_RSU_API_SECRET = "P5f0VZidPKc9aa8r8uQa3lNB05DN3WgH";
+        
+        let formData = new FormData();
+        formData.append('race_id', raceId);
+        formData.append('race_event_days_id', RACE_EVENT_DAYS_ID);
+        formData.append('rsu_api_key', API_KEY);
+        formData.append('X-RSU-API-SECRET', X_RSU_API_SECRET);
+        formData.append('album_name', albumName);
+      
+        try {
+          const response = await fetch(`${apiUrl}?race_event_days_id=${RACE_EVENT_DAYS_ID}&rsu_api_key=${API_KEY}&race_id=${raceId}`, {
+            method: 'POST',
+            headers: {
+                'x-rsu-api-secret': X_RSU_API_SECRET,
+            },
+            body: formData,
+          });
+      
+          if (!response.ok) {
+            throw new Error('API call failed with status ' + response.status);
+          }
+      
+          const data = await response.json();
+          console.log("Album created successfully:", data);
+          setAlbumName('');
+          setErrorMessage('');
+          setModalVisible(false);
+          // successful response
+        } catch (error) {
+          console.error("Error creating album:", error);
+          setErrorMessage("Failed to create album. Please try again."); // Update error message to reflect the failure
+          // error code
+        }
+      };
+
+      return (
         <View style>
             <Pressable onPress={() => {
                 handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
@@ -191,10 +248,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
                 </Animated.Text>
             </Animated.View>
             </Pressable>
-            <Pressable onPress={() => {
-                onNewAlbumRequest();
-                handlePress();
-            }}>
+            <Pressable onPress={() => navigation.navigate('imagePicker')}>
             <Animated.View
                 style={[styles.contentContainer, uploadPicture, uploadPictureStyle]}>
                 <View style={styles.iconContainer}>
@@ -209,8 +263,10 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
             </Animated.View>
             </Pressable>
 
-            <Pressable onPress={() =>{
-                handlePress();}}>
+            <Pressable onPress={() => {
+                setModalVisible(true); //make create album modal visible ; modal has its own onPress in return statement
+            
+            }}>
             <Animated.View
                 style={[styles.contentContainer, createFolder, newAlbumStyle]}>
                 <View style={styles.iconContainer}>
@@ -236,6 +292,20 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest}) => {
                     />
                 </Animated.View>
             </Pressable>
+            <ModalPopup visible={modalVisible}
+                onClose={onCloseModal}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Album Name"
+                    value={albumName}
+                    onChangeText={setAlbumName}
+                />
+                <Button
+                    title="Create"
+                    onPress={createAlbum}
+                />
+                {errorMessage ? <Text style={styles.errorMessageStyle}>{errorMessage}</Text> : null}
+            </ModalPopup>
         </View>
     );
 };
@@ -269,5 +339,41 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 18,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    textInput: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        width: 250,
+    },
+    closeButton: {
+        backgroundColor: '#ddd', 
+        width: 25, 
+        height: 25, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        borderRadius: 12.5,
+        opacity: 0.8,
+    },
+    createButton: {
+        backgroundColor: "#007BFF", 
+        width: 50,
+        height: 20,
+    },
+    createButtonText: {
+        color: "white", 
+        fontSize: 15,
+    },
+    errorMessageStyle: {
+        color: 'red',
+        textAlign: 'center', // This centers the text horizontally.
+        marginTop: 20, // Optional, adds some space above the error message if needed.
     },
 });

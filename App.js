@@ -60,22 +60,31 @@ export default function App() {
 
 }
 const CustomDrawerContent = (props) => {
-
   const { usersName } = useContext(UserContext);
+  const navigation = useNavigation();
 
-// IMPORTANT:  add a way to clear the email and password fields when returning to the login screen
-
-const navigation = useNavigation();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: '#ef4f9d', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}> 
-        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10 }}>{usersName}</Text>
-        <DrawerItemList {...props}/>
+        <Text style={{ paddingLeft: 15, fontSize: 20, paddingBottom: 10, color: 'black', fontWeight: 'bold'}}>{usersName}</Text>
         <DrawerItem
-          label="Sign Out"    // custom DrawerItem that gets added into the Drawer Navigator ; this way allows for custom colors and onPress functions
-          onPress={() => { navigation.navigate('Login') }}   // when pressed, it moves users to the Login Screen
-          style={{ backgroundColor: 'red' }} // Customize the background color
-          labelStyle={{ color: 'white' }}    // Customize the label color
+          label="Home"
+          onPress={() => navigation.navigate('Home')} 
+          labelStyle={{ color: 'black'}}
+          style={{
+            backgroundColor: 'lightgrey',
+            marginHorizontal: 10,
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'grey',
+            marginBottom: 10,
+          }}
+        />
+        <DrawerItem
+          label="Sign Out"
+          onPress={() => navigation.navigate('Login')}
+          style={{ borderColor: 'black', backgroundColor: 'grey' }}
+          labelStyle={{ color: 'white' }}
         />
       </ScrollView>
     </SafeAreaView>
