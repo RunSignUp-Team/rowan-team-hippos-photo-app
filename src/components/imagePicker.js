@@ -3,18 +3,18 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { Alert } from 'react-native';
 
 // Image processing function
-const processImage = async (uri, callback) => {
+const processImage = async (uri) => {
     try {
-        // Compressing and converting to PNG format
         const manipResult = await ImageManipulator.manipulateAsync(
             uri,
             [], // No specific operations like cropping or rotation
             { compress: 0.8, format: ImageManipulator.SaveFormat.PNG }
         );
-        callback(manipResult.uri);
+        return manipResult.uri;
     } catch (error) {
         console.error("Error processing image:", error);
         Alert.alert("Error processing image");
+        return uri; // Fallback URI
     }
 };
 export const openImagePickerAsync = async (callback) => {
@@ -33,13 +33,31 @@ export const openImagePickerAsync = async (callback) => {
     });
 
     if (!result.cancelled && result.assets) {
-        // Process each selected image
-        result.assets.forEach(({ uri }) => {
+        // Process each selected image and return URIs
+        const processedUris = await Promise.all(result.assets.map(async ({ uri }) => {
             if (uri && typeof uri === 'string') {
-                processImage(uri, callback);
-            } else {
-                console.error("Invalid URI:", uri);
+                const processedUri = await processImage(uri);
+                return processedUri;
             }
-        });
+            console.error("Invalid URI:", uri);
+            return uri; // Fallback in case of an error
+        }));
+        return processedUris;
+    }
+    return [];
+};
+
+export const handleSelectImage = async (uri) => {
+    try {
+        const editedImage = await ImageManipulator.manipulateAsync(
+            uri,
+            [{ crop: { originX: 0, originY: 0, width: 100, height: 100 } }],
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        );
+        return editedImage.uri; // Assuming you want to use the edited image URI elsewhere
+    } catch (error) {
+        console.error("Error in handleSelectImage:", error);
+        Alert.alert("Error cropping image");
+        return uri; // Optionally return the original URI in case of error
     }
 };
