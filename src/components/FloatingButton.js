@@ -248,7 +248,10 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                 </Animated.Text>
             </Animated.View>
             </Pressable>
-            <Pressable onPress={() => navigation.navigate('imagePicker')}>
+            <Pressable onPress={() => {
+                onNewAlbumRequest();
+                handlePress();
+            }}>            
             <Animated.View
                 style={[styles.contentContainer, uploadPicture, uploadPictureStyle]}>
                 <View style={styles.iconContainer}>
