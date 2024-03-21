@@ -54,10 +54,11 @@ export const handleSelectImage = async (uri) => {
             [{ crop: { originX: 0, originY: 0, width: 100, height: 100 } }],
             { compress: 1, format: ImageManipulator.SaveFormat.PNG }
         );
-        return editedImage.uri; // Assuming you want to use the edited image URI elsewhere
+        return editedImage.uri; 
     } catch (error) {
         console.error("Error in handleSelectImage:", error);
         Alert.alert("Error cropping image");
         return uri; // Optionally return the original URI in case of error
     }
 };
+

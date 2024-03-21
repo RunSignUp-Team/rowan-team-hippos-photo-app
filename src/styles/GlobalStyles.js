@@ -130,27 +130,44 @@ export const styles = StyleSheet.create({
     },
     albumDetailText: {
         fontSize: 14,
-        color: '#666', // Example color for detail text
-        // Add any additional styling you need for detail text
+        color: '#666', 
     },
     albumListContainer: {
-        // Ensure this container limits the height of the album list for scrolling
-        maxHeight: 300, // Adjust this value based on your needs
+        maxHeight: 300, 
     },
     galleryContainer: {
         flex: 1,
         flexDirection: 'row',
         padding: 10,
-        backgroundColor: 'red', // Light grey background for the gallery
+        backgroundColor: '#f0f0f0', // Light grey background for the gallery
     },
     thumbnailStyle: {
         width: 100,
         height: 100,
         margin: 5,
-        borderRadius: 5, // For rounded corners
+        borderRadius: 5, 
     },
     galleryContentContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',   
+        padding: 10,
+        position: 'absolute',
+        bottom: 30,
+        right: 30,
+         
+    },
+    cropButton: {
+        backgroundColor: '#007bff', 
+        padding: 10,
+        borderRadius: 5,
+        
+    },
+    cropButtonText: {
+        color: '#ffffff', 
+        fontWeight: 'bold',
+    },
 });

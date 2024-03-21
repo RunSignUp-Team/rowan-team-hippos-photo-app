@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text,FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
+import { View,Image, Text,FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import FloatingButton from '../components/FloatingButton';
@@ -7,15 +7,24 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
 import ModalPopup from '../components/Modal';
-import { openImagePickerAsync } from '../components/imagePicker';
+import { openImagePickerAsync, handleSelectImage, cropImage } from '../components/imagePicker';
 
 
 
 export default function RacePage({ navigation, route }) {
   const [selectedImages, setSelectedImages] = useState([]);
-  const [isProcessingImages, setIsProcessingImages] = useState(false);
+  const [isGalleryModalVisible, setIsGalleryModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState('albumList');
 
   const [isModalVisible, setModalVisible] = useState(false);
+  
+
+  // This gets called once image processing is done
+  const showGalleryModal = () => {
+    console.log("showGalleryModal called");
+    setIsGalleryModalVisible(true);
+  };
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -74,63 +83,90 @@ export default function RacePage({ navigation, route }) {
         setPhotoAlbumData(albums);
         setGotPhotoAlbums(true);
     };
+    const handleAlbumSelection = async (item) => {
+      console.log("Selected album:", item.album_name);
+      const uris = await openImagePickerAsync();
+      console.log("Selected URIs:", uris);
+      setSelectedImages(uris);
+      setModalContent('imageGallery');
+    };
+  const initiateCropping = async (imageUri) => {
+    try {
+      // Wait for the cropping operation to complete and log the result
+      const croppedImagePath = await cropImage(imageUri);
+      console.log('Cropped Image Path:', croppedImagePath);
+      // Here you can update the state with the cropped image path or perform further actions
+    } catch (error) {
+      console.error('Error cropping the image:', error);
+      Alert.alert('Error cropping the image', error.message || 'An error occurred during image cropping.');
+    }
+};
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
         <View style={styles.paddedContainer}>
-        <ModalPopup visible={isModalVisible} onClose={toggleModal}>
-          <Text style={styles.modalHeader}>Add to Album</Text>
+        <ModalPopup visible={isModalVisible} onClose={()=> {
+          toggleModal();
+          setModalContent('albumList');}}>
+          {modalContent === 'albumList' && (
+            <>
+              <Text style={styles.modalHeader}>Add to Album</Text>
+              <TouchableOpacity onPress={() => console.log("Create New Album")} style={styles.albumOption}>
+                <Text style={styles.albumOptionText}>Create New Album</Text>
+              </TouchableOpacity>
+              <View style={styles.albumListContainer}>
+                <FlatList
+                  data={photoAlbumData}
+                  keyExtractor={(item) => item.album_id.toString()}
+                  renderItem={({ item }) => {
+                    const lastModified = new Date(item.last_modified_ts * 1000);
+                    const formattedDate = lastModified.toLocaleDateString();
+                    return (
+                      <TouchableOpacity onPress={() => handleAlbumSelection(item)} style={styles.albumOption}>
+                        <Text style={styles.albumOptionText}>{item.album_name}</Text>
+                        <Text style={styles.albumDetailText}>{item.num_photos} Photos</Text>
+                        <Text style={styles.albumDetailText}>Last Modified: {formattedDate}</Text>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              </View>
+            </>
+          )}
+          {modalContent === 'imageGallery' && (
+            <>
+              <Text style={styles.modalHeader}>Crop Images</Text>
 
-    {/* Create New Album Option */}
-    <TouchableOpacity
-      onPress={() => {
-        console.log("Create New Album");
-        toggleModal(); //For now closes the modal
-      }}
-      style={styles.albumOption}
-    >
-      <Text style={styles.albumOptionText}>Create New Album</Text>
-    </TouchableOpacity>
+            <FlatList
+              data={selectedImages}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleSelectImage(item)}>
+                  <Image source={{ uri: item }} style={styles.thumbnailStyle} />
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => String(index)}
+              numColumns={3} 
+              contentContainerStyle={styles.galleryContentContainer}
+            />
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.cropButton}
+                  onPress={() => console.log('Crop Images Pressed')}>
+                  <Text style={styles.cropButtonText}>Upload</Text>
+                </TouchableOpacity>
+              </View>
 
-    {/* Scrollable Album List */}
-    <View style={styles.albumListContainer}>
-      <FlatList
-        data={photoAlbumData}
-        keyExtractor={item => item.album_id.toString()}
-        renderItem={({ item }) => {
-          const lastModified = new Date(item.last_modified_ts * 1000); 
-          const formattedDate = lastModified.toLocaleDateString(); 
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Selected album:", item.album_name);
-                 
-
-                // Use the imported function to open the image picker
-                openImagePickerAsync((uris) => {
-                  toggleModal();
-                  console.log('Selected image URI:', uris);
-                  setSelectedImages(uris);
-                  // To handle the upload process based on the selected album
-                  // Use item.album_id along with uri to upload
-                });
-            }}
-              style={styles.albumOption}
-            >
-              <Text style={styles.albumOptionText}>{item.album_name}</Text>
-              <Text style={styles.albumDetailText}>{item.num_photos} Photos</Text>
-              <Text style={styles.albumDetailText}>Last Modified: {formattedDate}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-          </View>
+            </>
+          )}
         </ModalPopup>
 
           <Text style={styles.title2}>{name}</Text>
           <Text style={styles.titleInfo}>{date}</Text>
           <Text style={styles.titleInfo}>{location}</Text>
         </View>
+
         <View style={styles.line}></View>
         <View style={styles.paddedContainer}>
           <View style={{paddingBottom: 16}}>
