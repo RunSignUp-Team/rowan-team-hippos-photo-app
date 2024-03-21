@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         elevation: 20,
         paddingBottom: 150,
         paddingTop: 40,
-        height: 250,
+        
     },
     closeButton: {
         position: 'absolute',
