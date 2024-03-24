@@ -7,13 +7,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
 import ModalPopup from '../components/Modal';
-import { openImagePickerAsync, handleSelectImage, cropImage } from '../components/imagePicker';
+import { openImagePickerAsync, handleSelectImage, cropImage, getUploadCredentials, uploadImage } from '../components/imagePicker';
 
 
 
 export default function RacePage({ navigation, route }) {
   const [selectedImages, setSelectedImages] = useState([]);
-  const [isGalleryModalVisible, setIsGalleryModalVisible] = useState(false);
+  const [selectedAlbumId, setSelectedAlbumId] = useState(null);
   const [modalContent, setModalContent] = useState('albumList');
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -79,12 +79,37 @@ export default function RacePage({ navigation, route }) {
         setGotPhotoAlbums(true);
     };
     const handleAlbumSelection = async (item) => {
+      setSelectedAlbumId(item.album_id);
       console.log("Selected album:", item.album_name);
       const uris = await openImagePickerAsync();
       console.log("Selected URIs:", uris);
       setSelectedImages(uris);
       if(uris.length > 0) {
         setModalContent('imageGallery');
+      }
+    };
+
+    const handleUploadButtonClick = async (album_id) =>{
+      console.log(album_id);
+      if(selectedImages === 0){
+        Alert.alert("Please select an image to upload.");
+        return;
+      }
+      try{
+        const credentials = await getUploadCredentials(APIKey, APISecret, race_id, event_days_id, album_id);
+        console.log("credentials", credentials); 
+        if(!credentials){
+          console.log("Error getting upload credentials");
+          return;
+        }
+        for(const uri of selectedImages){
+          await uploadImage(uri, credentials);
+        }
+
+        setSelectedImages([]);
+      }catch (error){
+        console.error("Error uploading image:", error);
+        Alert.alert("Error uploading image.");
       }
     };
   const initiateCropping = async (imageUri) => {
@@ -118,10 +143,13 @@ export default function RacePage({ navigation, route }) {
                   data={photoAlbumData}
                   keyExtractor={(item) => item.album_id.toString()}
                   renderItem={({ item }) => {
+                    const album_id = item.album_id;
                     const lastModified = new Date(item.last_modified_ts * 1000);
                     const formattedDate = lastModified.toLocaleDateString();
                     return (
-                      <TouchableOpacity onPress={() => handleAlbumSelection(item)} style={styles.albumOption}>
+                      <TouchableOpacity onPress={() => {
+                        handleAlbumSelection(item);
+                        }} style={styles.albumOption}>
                         <Text style={styles.albumOptionText}>{item.album_name}</Text>
                         <Text style={styles.albumDetailText}>{item.num_photos} Photos</Text>
                         <Text style={styles.albumDetailText}>Last Modified: {formattedDate}</Text>
@@ -139,7 +167,9 @@ export default function RacePage({ navigation, route }) {
             <FlatList
               data={selectedImages}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => Alert.alert("Cropping functionality not avaialble yet.")}>
+                <TouchableOpacity onPress={() => {
+                  Alert.alert("Cropping functionality not avaialble yet.");
+                  handleUploadButtonClick(album_id);}}>
                   <Image source={{ uri: item }} style={styles.thumbnailStyle} />
                 </TouchableOpacity>
               )}
@@ -150,7 +180,10 @@ export default function RacePage({ navigation, route }) {
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.cropButton}
-                  onPress={() => Alert.alert("Upload functionality needs to be implemented yet.")}>
+                  onPress={() => {
+                    handleUploadButtonClick(selectedAlbumId);
+                    toggleModal();
+                    setModalContent("albumList")}}>
                   <Text style={styles.cropButtonText}>Upload</Text>
                 </TouchableOpacity>
               </View>
