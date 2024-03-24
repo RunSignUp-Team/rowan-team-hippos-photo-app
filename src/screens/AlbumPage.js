@@ -41,6 +41,7 @@ export default function RacePage({ navigation, route }) {
     console.log(event_days_id);
     console.log(APIKey);
     console.log(APISecret);
+    console.log(race_id);
 
     useEffect(() => {
       console.log("Current tmpKey value:", APIKey);
