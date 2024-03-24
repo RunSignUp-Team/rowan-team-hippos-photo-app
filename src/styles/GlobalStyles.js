@@ -137,6 +137,10 @@ export const styles = StyleSheet.create({
     albumListContainer: {
         maxHeight: 300, 
     },
+    selectedAlbumOption: {
+        backgroundColor: '#ddeeff', 
+        
+    },
     galleryContainer: {
         flex: 1,
         flexDirection: 'row',
