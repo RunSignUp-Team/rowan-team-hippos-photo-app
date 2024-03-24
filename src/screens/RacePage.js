@@ -15,7 +15,7 @@ export default function RacePage({ navigation, route }) {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedAlbumId, setSelectedAlbumId] = useState(null);
   const [modalContent, setModalContent] = useState('albumList');
-
+  const [selectedAlbumIds, setSelectedAlbumIds] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   
 
@@ -78,9 +78,8 @@ export default function RacePage({ navigation, route }) {
         setPhotoAlbumData(albums);
         setGotPhotoAlbums(true);
     };
-    const handleAlbumSelection = async (item) => {
-      setSelectedAlbumId(item.album_id);
-      console.log("Selected album:", item.album_name);
+    const handleAlbumSelection = async () => {
+      console.log("Selected albums:", selectedAlbumIds.join(', '));
       const uris = await openImagePickerAsync();
       console.log("Selected URIs:", uris);
       setSelectedImages(uris);
@@ -88,23 +87,37 @@ export default function RacePage({ navigation, route }) {
         setModalContent('imageGallery');
       }
     };
+    const handleAlbumToggle = (albumId) => {
+      setSelectedAlbumIds((currentSelectedAlbumIds) => {
+        if (currentSelectedAlbumIds.includes(albumId)) {
+          // Already selected, remove it
+          return currentSelectedAlbumIds.filter((id) => id !== albumId);
+        } else {
+          // Not selected, add it
+          return [...currentSelectedAlbumIds, albumId];
+        }
+      });
+    };
 
-    const handleUploadButtonClick = async (album_id) =>{
-      console.log(album_id);
+    const handleUploadButtonClick = async () =>{
+      console.log("selectedAlbumId", selectedAlbumIds);
       if(selectedImages === 0){
         Alert.alert("Please select an image to upload.");
         return;
       }
       try{
-        const credentials = await getUploadCredentials(APIKey, APISecret, race_id, event_days_id, album_id);
-        console.log("credentials", credentials); 
-        if(!credentials){
-          console.log("Error getting upload credentials");
-          return;
+        for( const album_id of selectedAlbumIds){
+          const credentials = await getUploadCredentials(APIKey, APISecret, race_id, event_days_id, album_id);
+          console.log("credentials", credentials);
+          if (!credentials) {
+            console.log("Error getting upload credentials");
+            return;
+          }
+          for (const uri of selectedImages) {
+            await uploadImage(uri, credentials);
+          }
         }
-        for(const uri of selectedImages){
-          await uploadImage(uri, credentials);
-        }
+        
 
         setSelectedImages([]);
       }catch (error){
@@ -112,17 +125,6 @@ export default function RacePage({ navigation, route }) {
         Alert.alert("Error uploading image.");
       }
     };
-  const initiateCropping = async (imageUri) => {
-    try {
-      // Wait for the cropping operation to complete and log the result
-      const croppedImagePath = await cropImage(imageUri);
-      console.log('Cropped Image Path:', croppedImagePath);
-      // Here you can update the state with the cropped image path or perform further actions
-    } catch (error) {
-      console.error('Error cropping the image:', error);
-      Alert.alert('Error cropping the image', error.message || 'An error occurred during image cropping.');
-    }
-};
 
 
 
@@ -134,22 +136,20 @@ export default function RacePage({ navigation, route }) {
           setTimeout(() => setModalContent('albumList'), 300);}}>
           {modalContent === 'albumList' && (
             <>
-              <Text style={styles.modalHeader}>Add to Album</Text>
-              <TouchableOpacity onPress={() => console.log("Create New Album")} style={styles.albumOption}>
-                <Text style={styles.albumOptionText}>Create New Album</Text>
-              </TouchableOpacity>
+              <Text style={styles.modalHeader}>Add to Album(s)</Text>
+              
               <View style={styles.albumListContainer}>
                 <FlatList
                   data={photoAlbumData}
                   keyExtractor={(item) => item.album_id.toString()}
                   renderItem={({ item }) => {
-                    const album_id = item.album_id;
                     const lastModified = new Date(item.last_modified_ts * 1000);
                     const formattedDate = lastModified.toLocaleDateString();
+                    const isSelected = selectedAlbumIds.includes(item.album_id);
                     return (
                       <TouchableOpacity onPress={() => {
-                        handleAlbumSelection(item);
-                        }} style={styles.albumOption}>
+                        handleAlbumToggle(item.album_id);
+                        }} style={[styles.albumOption, isSelected && styles.selectedAlbumOption]}>
                         <Text style={styles.albumOptionText}>{item.album_name}</Text>
                         <Text style={styles.albumDetailText}>{item.num_photos} Photos</Text>
                         <Text style={styles.albumDetailText}>Last Modified: {formattedDate}</Text>
@@ -157,6 +157,19 @@ export default function RacePage({ navigation, route }) {
                     );
                   }}
                 />
+                <TouchableOpacity onPress={() => console.log("Create New Album")} style={styles.albumOption}>
+                  <Text style={styles.albumOptionText}>Create New Album</Text>
+                </TouchableOpacity>
+                
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.cropButton}
+                  onPress={() => {
+                    handleAlbumSelection();
+                  }}>
+                  <Text style={styles.cropButtonText}>Select</Text>
+                </TouchableOpacity>
               </View>
             </>
           )}
@@ -169,7 +182,7 @@ export default function RacePage({ navigation, route }) {
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => {
                   Alert.alert("Cropping functionality not avaialble yet.");
-                  handleUploadButtonClick(album_id);}}>
+                  }}>
                   <Image source={{ uri: item }} style={styles.thumbnailStyle} />
                 </TouchableOpacity>
               )}
@@ -181,7 +194,7 @@ export default function RacePage({ navigation, route }) {
                 <TouchableOpacity
                   style={styles.cropButton}
                   onPress={() => {
-                    handleUploadButtonClick(selectedAlbumId);
+                    handleUploadButtonClick();
                     toggleModal();
                     setModalContent("albumList")}}>
                   <Text style={styles.cropButtonText}>Upload</Text>
