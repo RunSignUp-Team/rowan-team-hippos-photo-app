@@ -122,9 +122,11 @@ export const uploadImage = async (imageUri, credentials) => {
         });
 
         if (uploadResponse.ok) {
+            Alert.alert("Image uploaded successfully");
             console.log("Image uploaded successfully");
         } else {
             errorBody = await uploadResponse.text();
+            Alert.alert("Error uploading image");
             console.log("Error uploading image", uploadResponse.status, errorBody);
         }
     } catch (error) {
