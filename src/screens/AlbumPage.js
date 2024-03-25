@@ -56,7 +56,7 @@ export default function RacePage({ navigation, route }) {
         setGotPhotos(false);
         let photos = [];
         let photosError = false;
-        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photos.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey + '&page=' + pageNumber + '&num=' + photosPerPage + '&include_participant_uploads=T&generic_photo_album_id=' + album_id;
+        let url = 'https://test3.runsignup.com/Rest/v2/photos/get-race-photos.json?race_id=' + race_id + '&race_event_days_id=' + event_days_id + '&rsu_api_key=' + APIKey + '&include_participant_uploads=T&generic_photo_album_id=' + album_id;
         const headers = new Headers();
         headers.append("x-rsu-api-secret", APISecret);
             try {
@@ -81,7 +81,10 @@ export default function RacePage({ navigation, route }) {
         setGotPhotos(true);
     };
 
-    console.log(photosData[0]);
+    photosData.sort(function(a, b) {
+      return b.uploaded_ts - a.uploaded_ts;
+    });
+
 
     const [modalVisible, setModalVisible] = useState(false);
     const [imageURL, setImageURL] = useState();
@@ -153,7 +156,7 @@ export default function RacePage({ navigation, route }) {
           </View>
       </View>
       <ScrollView style={{paddingBottom: 100}}>
-        <Photos photosData={photosData} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Photos>
+        <Photos photosData={photosData} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize} pageNumber={pageNumber} photosPerPage={photosPerPage}></Photos>
       </ScrollView>
       <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity onPress={() => setPageNumber(pageNumber - 1 >= 1 ? pageNumber - 1 : pageNumber)} style={{paddingVertical: 10}}>
@@ -198,13 +201,15 @@ export default function RacePage({ navigation, route }) {
   );
 }
 
-function Photos({ photosData, setModalVisible, setImageSize, setImageURL }) {
+function Photos({ photosData, setModalVisible, setImageSize, setImageURL, pageNumber, photosPerPage }) {
     let leftColumn = [];
     let rightColumn = [];
     let leftHeight = 0;
     let rightHeight = 0;
-    photosData.forEach(rowData => {
-
+    let startIndex =  (pageNumber - 1) * photosPerPage;
+    console.log(startIndex + " start");
+    for (let i = startIndex; i < startIndex + photosPerPage && i < photosData.length; i++) {
+      let rowData = photosData[i];
       const imageSize = {
           width: 100,
           height: rowData.thumbnail.height / 4 * 100 / (rowData.thumbnail.width / 4)
@@ -216,7 +221,7 @@ function Photos({ photosData, setModalVisible, setImageSize, setImageURL }) {
           rightHeight += imageSize.height + 10;
           rightColumn.push(rowData);
       }
-    });
+    };
 
     
   return (
@@ -225,7 +230,9 @@ function Photos({ photosData, setModalVisible, setImageSize, setImageURL }) {
       justifyContent: 'center', // Horizontally center the columns
       }}>
       <Column column={leftColumn} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Column>
+      {rightColumn.length > 0 &&
       <Column column={rightColumn} setModalVisible={setModalVisible} setImageURL={setImageURL} setImageSize={setImageSize}></Column>
+      }
   </View>
   );
 }
