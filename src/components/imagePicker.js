@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { Alert } from 'react-native';
+import axios from 'axios';
 
 // Image processing function
 const processImage = async (uri) => {
@@ -116,22 +117,26 @@ export const uploadImage = async (imageUri, credentials) => {
     }
 
     try {
-        const uploadResponse = await fetch(action, {
-            method: method,
-            body: formData,
+        const uploadResponse = await axios({
+            method: method.toLowerCase(), 
+            url: action,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
         });
 
-        if (uploadResponse.ok) {
-            Alert.alert("Image uploaded successfully");
-            console.log("Image uploaded successfully");
-        } else {
-            errorBody = await uploadResponse.text();
-            Alert.alert("Error uploading image");
-            console.log("Error uploading image", uploadResponse.status, errorBody);
-        }
+        Alert.alert("Image uploaded successfully");
+        console.log("Image uploaded successfully");
     } catch (error) {
         console.error("Error in uploadImage:", error);
-        Alert.alert("Error uploading image");
+        // Check for response existence in error object to get HTTP status code and response data
+        if (error.response) {
+            console.log("Error uploading image", error.response.status, error.response.data);
+            Alert.alert("Error uploading image", `Status: ${error.response.status}`);
+        } else {
+            Alert.alert("Error uploading image", error.message);
+        }
     }
 };
 
