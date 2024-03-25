@@ -7,16 +7,17 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
 import { AntDesign } from "@expo/vector-icons";
 import ModalPopup from '../components/Modal';
+import * as Progress from 'react-native-progress';
 import { openImagePickerAsync, handleSelectImage, cropImage, getUploadCredentials, uploadImage } from '../components/imagePicker';
 
 
 
 export default function RacePage({ navigation, route }) {
   const [selectedImages, setSelectedImages] = useState([]);
-  const [selectedAlbumId, setSelectedAlbumId] = useState(null);
   const [modalContent, setModalContent] = useState('albumList');
   const [selectedAlbumIds, setSelectedAlbumIds] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+
   
 
 
@@ -105,7 +106,9 @@ export default function RacePage({ navigation, route }) {
         Alert.alert("Please select an image to upload.");
         return;
       }
-      try{
+      
+
+      try{        
         for( const album_id of selectedAlbumIds){
           const credentials = await getUploadCredentials(APIKey, APISecret, race_id, event_days_id, album_id);
           console.log("credentials", credentials);
@@ -118,12 +121,13 @@ export default function RacePage({ navigation, route }) {
           }
         }
         
-
+        
         setSelectedImages([]);
+        setSelectedAlbumIds([]);
       }catch (error){
         console.error("Error uploading image:", error);
         Alert.alert("Error uploading image.");
-      }
+      } 
     };
 
 
@@ -196,7 +200,8 @@ export default function RacePage({ navigation, route }) {
                   onPress={() => {
                     handleUploadButtonClick();
                     toggleModal();
-                    setModalContent("albumList")}}>
+                    setModalContent("albumList")
+                    }}>
                   <Text style={styles.cropButtonText}>Upload</Text>
                 </TouchableOpacity>
               </View>
