@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { Image, Pressable, StyleSheet, View, Text, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Animated, {
     Easing,
@@ -248,7 +248,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                 </Animated.Text>
             </Animated.View>
             </Pressable>
-            <Pressable onPress={() => {
+            <TouchableWithoutFeedback onPress={() => {
                 onNewAlbumRequest();
                 handlePress();
             }}>            
@@ -264,7 +264,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                     Upload Pictures
                 </Animated.Text>
             </Animated.View>
-            </Pressable>
+            </TouchableWithoutFeedback>
 
             <Pressable onPress={() => {
                 setModalVisible(true); //make create album modal visible ; modal has its own onPress in return statement
