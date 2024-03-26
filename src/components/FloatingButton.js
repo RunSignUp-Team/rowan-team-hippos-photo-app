@@ -13,8 +13,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import ModalPopup from './Modal';
+import useGoogleAuthentication from './YouTube';
+
 
 const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId, RACE_EVENT_DAYS_ID}) => {
+    const { promptGoogleSignIn } = useGoogleAuthentication();
+    
     const navigation = useNavigation();
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
@@ -233,7 +237,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
       return (
         <View style>
             <Pressable onPress={() => {
-                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
+                
+                promptGoogleSignIn();
             }}>
             <Animated.View
                 style={[styles.contentContainer, liveStream, liveStreamStyle]}>
