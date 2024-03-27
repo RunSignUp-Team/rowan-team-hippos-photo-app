@@ -19,6 +19,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
     const albumValue = useSharedValue(30);
     const uploadPictureValue = useSharedValue(30);
     const liveStreamValue = useSharedValue(30);
+    const streamPhotosValue = useSharedValue(30);
+    const streamPhotosWidth = useSharedValue(60);
     const albumWidth = useSharedValue(60);
     const uploadPictureWidth = useSharedValue(60);
     const liveStreamWidth = useSharedValue(60);
@@ -59,6 +61,11 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                         liveStreamValue.value = withDelay(100, withTiming(30, config));
                     }
                 });
+                streamPhotosWidth.value = withTiming(60, { duration: 100 }, finish => {
+                    if (finish) {
+                        streamPhotosValue.value = withDelay(150, withTiming(30, config));
+                    }
+                });
                 opacity.value = withTiming(0, { duration: 100 });
             } 
         }
@@ -97,16 +104,25 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                     liveStreamValue.value = withDelay(100, withTiming(30, config));
                 }
             });
+            streamPhotosWidth.value = withTiming(60, { duration: 100 }, finish => {
+                if (finish) {
+                    streamPhotosValue.value = withDelay(150, withTiming(30, config));
+                }
+            });
             opacity.value = withTiming(0, { duration: 100 });
 
         } else {
-            //if isOpen is false, which means the menu will be opened on clicking the plus icon
+            // Opening animations
             albumValue.value = withDelay(200, withSpring(130));
-            uploadPictureValue.value = withDelay(100, withSpring(210));
-            liveStreamValue.value = withSpring(290);
+            uploadPictureValue.value = withDelay(150, withSpring(210));
+            liveStreamValue.value = withDelay(100, withSpring(290));
+            streamPhotosValue.value = withDelay(50, withSpring(370)); // Adjusted for correct stagger
+        
             albumWidth.value = withDelay(250, withSpring(200));
             uploadPictureWidth.value = withDelay(200, withSpring(200));
             liveStreamWidth.value = withDelay(150, withSpring(200));
+            streamPhotosWidth.value = withDelay(100, withSpring(200));
+        
             opacity.value = withDelay(350, withSpring(1));
         }
         isOpen.value = !isOpen.value;
@@ -131,6 +147,11 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
     const liveStreamStyle = useAnimatedStyle(() => {
         return {
             width: liveStreamWidth.value,
+        };
+    });
+    const streamPhotosStyle = useAnimatedStyle(() => {
+        return {
+            width: streamPhotosWidth.value,
         };
     });
 
@@ -172,6 +193,20 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
 
         return {
             bottom: liveStreamValue.value,
+            transform: [{ scale: scale }],
+        };
+    });
+
+    const streamPhotos = useAnimatedStyle(() => {
+        const scale = interpolate(
+            streamPhotosValue.value,
+            [30, 370],
+            [0, 1],
+            Extrapolation.CLAMP,
+        );
+
+        return {
+            bottom: streamPhotosValue.value,
             transform: [{ scale: scale }],
         };
     });
@@ -232,7 +267,24 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
 
       return (
         <View style>
-            <Pressable onPress={() => {
+            <Pressable onPress={() => { //STREAMING PHOTOS
+                handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
+            }}>
+            <Animated.View
+                style={[styles.contentContainer, streamPhotos, streamPhotosStyle]}>
+                <View style={styles.iconContainer}>
+                    <Image
+                        source={require('../../assets/CameraIcon.png')} //third icon
+                        style={styles.icon}
+                    />
+                </View>
+                <Animated.Text style={[styles.text, opacityText]}>
+                    Stream Photos
+                </Animated.Text>
+            </Animated.View>
+            </Pressable>
+
+            <Pressable onPress={() => { //LIVE STREAMING
                 handlePress(); //in place of the handlePress(), can be linked with actual functionality in the future
             }}>
             <Animated.View
@@ -248,7 +300,8 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
                 </Animated.Text>
             </Animated.View>
             </Pressable>
-            <Pressable onPress={() => {
+
+            <Pressable onPress={() => { //UPLOADING PHOTOS
                 onNewAlbumRequest();
                 handlePress();
             }}>            
@@ -266,7 +319,7 @@ const FloatingButton = ({isOpenProp, onToggleRequest, onNewAlbumRequest, raceId,
             </Animated.View>
             </Pressable>
 
-            <Pressable onPress={() => {
+            <Pressable onPress={() => { //CREATING NEW ALBUM
                 setModalVisible(true); //make create album modal visible ; modal has its own onPress in return statement
             
             }}>
@@ -376,7 +429,7 @@ const styles = StyleSheet.create({
     },
     errorMessageStyle: {
         color: 'red',
-        textAlign: 'center', // This centers the text horizontally.
-        marginTop: 20, // Optional, adds some space above the error message if needed.
+        textAlign: 'center',
+        marginTop: 20, 
     },
 });
