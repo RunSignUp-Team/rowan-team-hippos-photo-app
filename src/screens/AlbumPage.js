@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Alert, Image, Dimensions, Modal, Pressable, FlatList } from 'react-native';
-import { Table, Row } from 'react-native-table-component';
 import { styles } from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { UserContext } from '../components/AuthContext';
@@ -202,28 +201,35 @@ export default function RacePage({ navigation, route }) {
 }
 
 function Photos({ photosData, setModalVisible, setImageSize, setImageURL, pageNumber, photosPerPage }) {
-    let leftColumn = [];
-    let rightColumn = [];
-    let leftHeight = 0;
-    let rightHeight = 0;
-    let startIndex =  (pageNumber - 1) * photosPerPage;
-    console.log(startIndex + " start");
-    for (let i = startIndex; i < startIndex + photosPerPage && i < photosData.length; i++) {
-      let rowData = photosData[i];
-      const imageSize = {
-          width: 100,
-          height: rowData.thumbnail.height / 4 * 100 / (rowData.thumbnail.width / 4)
-      };
-      if (leftHeight <= rightHeight) {
-          leftHeight += imageSize.height + 10;
-          leftColumn.push(rowData);
-      } else {
-          rightHeight += imageSize.height + 10;
-          rightColumn.push(rowData);
-      }
+  let leftColumn = [];
+  let rightColumn = [];
+  let leftHeight = 0;
+  let rightHeight = 0;
+  let startIndex =  (pageNumber - 1) * photosPerPage;
+  console.log(startIndex + " start");
+  for (let i = startIndex; i < startIndex + photosPerPage && i < photosData.length; i++) {
+    let rowData = photosData[i];
+    const imageSize = {
+        width: 100,
+        height: rowData.thumbnail.height / 4 * 100 / (rowData.thumbnail.width / 4)
     };
+    if (leftHeight <= rightHeight) {
+        leftHeight += imageSize.height + 10;
+        leftColumn.push(rowData);
+    } else {
+        rightHeight += imageSize.height + 10;
+        rightColumn.push(rowData);
+    }
+  };
 
-    
+  if (leftColumn.length === 0 && rightColumn.length === 0) {
+      return (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20 }}>No photos available</Text>
+          </View>
+      );
+  }
+
   return (
     <View style={{ flex: 1,
       flexDirection: 'row',

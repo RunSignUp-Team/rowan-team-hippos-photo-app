@@ -76,7 +76,7 @@ return (
     </Pressable>
     {hasPressed && errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : <Text style={styles.errorMessage}></Text>} 
   </View>
-);
+  );
 };
 
 export default Input;
