@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Pressable, Text } from 'react-native';
+import { View, TextInput, Pressable, Text, SafeAreaView } from 'react-native';
 import { styles } from '../styles/LoginStyles';
 import { UserContext } from './AuthContext';
 
@@ -57,6 +57,7 @@ const Input = ({ navigation }) => {
 }
 
 return (
+  
   <View style={styles.login_container}>
     <TextInput
       style={[styles.login_input, { borderColor: (username=='' && hasPressed==true) ? 'red' : 'black' }]}
